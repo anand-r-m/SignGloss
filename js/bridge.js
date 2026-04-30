@@ -67,7 +67,7 @@ export class InferenceBridge {
   }
 
   loadModel(path) {
-    const modelPath = path || MODEL_PATH;
+    const modelPath = new URL(path || MODEL_PATH, window.location.href).href;
     this.worker.postMessage({ type: 'LOAD_MODEL', modelPath });
   }
 

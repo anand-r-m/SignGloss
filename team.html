@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignGloss — Team</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-bs-theme="dark">
+  <div id="navbar-placeholder"></div>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Meet the Team</h1>
+        <p class="lead text-secondary">The people behind SignGloss</p>
+      </div>
+
+      <div class="row g-4 justify-content-center mb-5">
+        <div class="col-md-6 col-lg-5">
+          <div class="card bg-dark border-secondary h-100">
+            <div class="card-body text-center p-4">
+              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width:120px;height:120px;">
+                <i class="bi bi-person-fill fs-1 text-light"></i>
+              </div>
+              <h4 class="card-title">Anand R M</h4>
+              <p class="text-info mb-2">Dev A — Capture & Frontend</p>
+              <p class="card-text text-secondary">Handles camera capture, MediaPipe landmark extraction, UI layout, and the Interstellar warp transition.</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="https://github.com/anand-r-m" target="_blank" class="text-light"><i class="bi bi-github fs-5"></i></a>
+                <a href="#" target="_blank" class="text-light"><i class="bi bi-linkedin fs-5"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-5">
+          <div class="card bg-dark border-secondary h-100">
+            <div class="card-body text-center p-4">
+              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width:120px;height:120px;">
+                <i class="bi bi-person-fill fs-1 text-light"></i>
+              </div>
+              <h4 class="card-title">Team Member</h4>
+              <p class="text-info mb-2">Dev B — Inference Pipeline</p>
+              <p class="card-text text-secondary">Builds the ONNX inference worker, CTC decoder, bridge layer, and results UI for real-time gloss output.</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="#" target="_blank" class="text-light"><i class="bi bi-github fs-5"></i></a>
+                <a href="#" target="_blank" class="text-light"><i class="bi bi-linkedin fs-5"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-secondary my-5">
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="text-center mb-4">Get in Touch</h2>
+          <form id="contact-form" novalidate>
+            <div class="mb-3">
+              <label for="contact-name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="contact-name" required>
+              <div class="invalid-feedback">Please enter your name.</div>
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="contact-email" required>
+              <div class="invalid-feedback">Please enter a valid email address.</div>
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-message" class="form-label">Message</label>
+              <textarea class="form-control" id="contact-message" rows="4" required></textarea>
+              <div class="invalid-feedback">Message must be at least 10 characters.</div>
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="contact-submit">Send Message</button>
+          </form>
+          <div id="contact-success" class="alert alert-success mt-3 d-none">
+            Message sent successfully! We'll get back to you soon.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/common.js"></script>
+  <script type="module" src="js/team.js"></script>
+</body>
+</html>

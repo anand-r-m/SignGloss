@@ -39,6 +39,19 @@ function init() {
   if (testBtn) {
     testBtn.addEventListener('click', toggleTestMode);
   }
+
+  const retryBtn = document.getElementById('retry-model-btn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      const errorState = document.getElementById('model-error-state');
+      const spinner = document.getElementById('model-loading-spinner');
+      if (errorState) errorState.classList.add('d-none');
+      if (spinner) spinner.classList.remove('d-none');
+      bridge.terminate();
+      bridge = new InferenceBridge();
+      bridge.loadModel();
+    });
+  }
 }
 
 function updateCurrentGloss(glosses) {
@@ -80,6 +93,8 @@ function updateBufferProgress(fill) {
 function updateModelStatus(status) {
   const dot = document.getElementById('status-dot');
   const label = document.getElementById('status-label');
+  const spinner = document.getElementById('model-loading-spinner');
+  const errorState = document.getElementById('model-error-state');
   if (!dot || !label) return;
 
   dot.className = 'status-dot';
@@ -88,22 +103,32 @@ function updateModelStatus(status) {
     case 'loading':
       dot.classList.add('status-loading');
       label.textContent = 'Loading model...';
+      if (spinner) spinner.classList.remove('d-none');
+      if (errorState) errorState.classList.add('d-none');
       break;
     case 'ready':
       dot.classList.add('status-ready');
       label.textContent = 'Model ready';
+      if (spinner) spinner.classList.add('d-none');
+      if (errorState) errorState.classList.add('d-none');
       break;
     case 'error':
       dot.classList.add('status-error');
       label.textContent = 'Model error';
+      if (spinner) spinner.classList.add('d-none');
+      if (errorState) errorState.classList.remove('d-none');
       break;
     case 'restarting':
       dot.classList.add('status-loading');
       label.textContent = 'Restarting pipeline...';
+      if (spinner) spinner.classList.remove('d-none');
+      if (errorState) errorState.classList.add('d-none');
       break;
     case 'fatal':
       dot.classList.add('status-error');
       label.textContent = 'Please refresh the page';
+      if (spinner) spinner.classList.add('d-none');
+      if (errorState) errorState.classList.remove('d-none');
       break;
     default:
       label.textContent = status;

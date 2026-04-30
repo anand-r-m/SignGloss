@@ -7,6 +7,29 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      background: #6c757d;
+    }
+    .status-loading {
+      background: #ffc107;
+      animation: pulse-dot 1s infinite;
+    }
+    .status-ready {
+      background: #198754;
+    }
+    .status-error {
+      background: #dc3545;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
 </head>
 <body data-bs-theme="dark">
   <div id="navbar-placeholder"></div>
@@ -61,6 +84,17 @@
               </div>
 
               <div id="error-display" class="alert alert-danger py-2 d-none" role="alert"></div>
+
+              <div id="model-loading-spinner" class="text-center py-3">
+                <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+                <small class="text-secondary ms-2">Loading ONNX model...</small>
+              </div>
+
+              <div id="model-error-state" class="text-center py-3 d-none">
+                <i class="bi bi-exclamation-triangle text-danger fs-4 d-block mb-2"></i>
+                <p class="text-danger small mb-2">Model failed to load</p>
+                <button id="retry-model-btn" class="btn btn-outline-danger btn-sm">Retry</button>
+              </div>
 
               <hr class="border-secondary">
 

@@ -1,5 +1,7 @@
 importScripts('https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js');
 
+ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
+
 const POSITION_FEATURES = 78;
 const TOTAL_FEATURES = 156;
 const WINDOW_SIZE = 64;

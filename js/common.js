@@ -95,9 +95,6 @@ function init() {
     playArrival();
   }
 
-  window.addEventListener('beforeunload', () => {
-    sessionStorage.setItem('sg-warp-active', '1');
-  });
 }
 
 if (document.readyState === 'loading') {

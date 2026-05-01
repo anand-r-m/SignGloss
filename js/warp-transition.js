@@ -81,6 +81,7 @@ function warpLoop(timestamp) {
   drawWarpFrame(elapsed);
 
   if (elapsed >= TOTAL_DURATION) {
+    sessionStorage.setItem('sg-warp-active', '1');
     window.location.href = targetUrl;
     return;
   }

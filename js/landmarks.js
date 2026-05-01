@@ -11,7 +11,7 @@ let visionModule = null;
 
 async function loadVisionModule() {
   if (visionModule) return visionModule;
-  const mod = await import(VISION_CDN);
+  const mod = await import(VISION_CDN + '/vision_bundle.mjs');
   visionModule = mod;
   return visionModule;
 }

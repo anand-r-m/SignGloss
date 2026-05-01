@@ -43,7 +43,12 @@ export async function initMediaPipe() {
   return true;
 }
 
+let lastMpTimestamp = 0;
+
 export function processFrame(videoElement, timestampMs) {
+  const safeTimestamp = Math.max(Math.round(timestampMs), lastMpTimestamp + 1);
+  lastMpTimestamp = safeTimestamp;
+
   const landmarks = new Float32Array(POSITION_FEATURES);
   landmarks.fill(0);
 
@@ -53,7 +58,7 @@ export function processFrame(videoElement, timestampMs) {
   let rightHand = null;
 
   if (handLandmarker) {
-    handResults = handLandmarker.detectForVideo(videoElement, timestampMs);
+    handResults = handLandmarker.detectForVideo(videoElement, safeTimestamp);
 
     if (handResults.landmarks && handResults.landmarks.length > 0) {
       for (let i = 0; i < handResults.landmarks.length; i++) {
@@ -88,7 +93,7 @@ export function processFrame(videoElement, timestampMs) {
   }
 
   if (poseLandmarker) {
-    poseResults = poseLandmarker.detectForVideo(videoElement, timestampMs);
+    poseResults = poseLandmarker.detectForVideo(videoElement, safeTimestamp);
 
     if (poseResults.landmarks && poseResults.landmarks.length > 0) {
       const pose = poseResults.landmarks[0];

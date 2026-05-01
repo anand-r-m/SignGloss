@@ -1,4 +1,4 @@
-import { Pipeline, POSITION_FEATURES } from './contract.js';
+import { Pipeline } from './contract.js';
 import { startCamera, stopCamera, getStream } from './capture.js';
 import { initMediaPipe, processFrame, isReady } from './landmarks.js';
 

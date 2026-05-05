@@ -60,11 +60,12 @@ function injectFooter() {
   `;
 }
 
-function createWarpCanvas() {
+function createTransitionOverlay() {
   if (document.getElementById('warp-overlay')) return;
-  const canvas = document.createElement('canvas');
-  canvas.id = 'warp-overlay';
-  document.body.appendChild(canvas);
+  const overlay = document.createElement('div');
+  overlay.id = 'warp-overlay';
+  overlay.className = 'sg-page-transition';
+  document.body.appendChild(overlay);
 }
 
 function interceptNavClicks() {
@@ -84,7 +85,7 @@ function interceptNavClicks() {
 }
 
 function init() {
-  createWarpCanvas();
+  createTransitionOverlay();
   injectNavbar();
   injectFooter();
   interceptNavClicks();

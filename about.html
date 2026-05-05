@@ -15,7 +15,7 @@
   <section class="sg-section">
     <div class="container">
       <div class="text-center mb-5 sg-fade-in">
-        <div class="sg-badge sg-badge-accent mb-3">How It Works</div>
+        <div class="sg-badge sg-badge-primary mb-3">How It Works</div>
         <h1 class="sg-section-title" style="font-size: 2.8rem">About SignGloss</h1>
         <p class="sg-section-subtitle" style="max-width: 640px; margin: 0 auto">
           A client-side pipeline that translates Indian Sign Language into gloss tokens using webcam input, MediaPipe, and ONNX neural networks.
@@ -25,13 +25,37 @@
       <div class="row g-4 mb-5">
         <div class="col-lg-8 mx-auto">
           <div class="sg-card">
-            <h2 class="sg-card-title mb-3" style="font-size: 1.4rem">Project Overview</h2>
-            <p class="sg-card-text">
+            <div class="sg-overview-toggle" id="overview-toggle" onclick="document.getElementById('overview-toggle').classList.toggle('expanded');document.getElementById('overview-content').classList.toggle('expanded');">
+              <h2 class="sg-card-title mb-0" style="font-size: 1.4rem">Project Overview</h2>
+              <i class="bi bi-chevron-down sg-chevron"></i>
+            </div>
+            <p class="sg-card-text mt-3">
               SignGloss is a real-time Continuous Sign Language Recognition (CSLR) system that runs entirely in the browser. It captures your webcam feed, extracts 26 key hand and body landmarks using Google's MediaPipe, then feeds those features into an ONNX neural network for inference. The output is decoded using CTC (Connectionist Temporal Classification) to produce readable gloss tokens.
             </p>
-            <p class="sg-card-text mb-0">
-              No data ever leaves your device. There is no server, no API, and no cloud dependency. The entire pipeline — from camera capture to gloss output — executes on your machine using Web Workers for non-blocking inference.
-            </p>
+            <div class="sg-overview-content" id="overview-content">
+              <h4>What the System Does</h4>
+              <p>SignGloss translates Indian Sign Language (ISL) gestures into gloss tokens — standardized text labels representing individual signs. It processes continuous signing, not just isolated gestures, making it suitable for real conversation flows.</p>
+
+              <h4>How It Works</h4>
+              <p>The pipeline runs in five sequential stages, all executing client-side:</p>
+              <ul>
+                <li>The webcam captures video at 30 FPS via WebRTC</li>
+                <li>MediaPipe extracts 26 hand and body landmarks per frame (x, y, z coordinates)</li>
+                <li>A Web Worker computes velocity features and buffers 64 frames into a sliding window</li>
+                <li>The ONNX Runtime runs neural network inference on the buffered tensor [1, 64, 156]</li>
+                <li>CTC greedy decoding collapses model output into readable gloss tokens</li>
+              </ul>
+
+              <h4>Key Components</h4>
+              <ul>
+                <li><strong>MediaPipe Tasks Vision</strong> — Google's ML library for real-time hand and pose landmark detection directly in the browser</li>
+                <li><strong>ONNX Runtime Web</strong> — runs the trained neural network using WebAssembly for near-native inference speed</li>
+                <li><strong>Web Workers</strong> — keeps inference off the main thread so the UI stays responsive</li>
+                <li><strong>CTC Decoding</strong> — Connectionist Temporal Classification handles the variable-length alignment between frames and output tokens</li>
+              </ul>
+
+              <p>No data ever leaves your device. There is no server, no API, and no cloud dependency. The entire pipeline executes on your machine.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -44,7 +68,7 @@
       <div class="row g-3 align-items-center justify-content-center mb-5">
         <div class="col-lg-2 col-md-4 col-6">
           <div class="sg-pipeline-step">
-            <i class="bi bi-camera-video-fill text-info fs-3 d-block mb-2"></i>
+            <i class="bi bi-camera-video-fill fs-3 d-block mb-2" style="color:var(--sg-text-muted)"></i>
             <div class="fw-bold small">Camera</div>
             <div class="text-muted" style="font-size: 0.75rem">WebRTC 30fps</div>
           </div>
@@ -54,7 +78,7 @@
         </div>
         <div class="col-lg-2 col-md-4 col-6">
           <div class="sg-pipeline-step">
-            <i class="bi bi-hand-index-fill text-info fs-3 d-block mb-2"></i>
+            <i class="bi bi-hand-index-fill fs-3 d-block mb-2" style="color:var(--sg-text-muted)"></i>
             <div class="fw-bold small">MediaPipe</div>
             <div class="text-muted" style="font-size: 0.75rem">26 Landmarks</div>
           </div>
@@ -64,7 +88,7 @@
         </div>
         <div class="col-lg-2 col-md-4 col-6">
           <div class="sg-pipeline-step">
-            <i class="bi bi-cpu-fill text-info fs-3 d-block mb-2"></i>
+            <i class="bi bi-cpu-fill fs-3 d-block mb-2" style="color:var(--sg-text-muted)"></i>
             <div class="fw-bold small">Web Worker</div>
             <div class="text-muted" style="font-size: 0.75rem">Velocity + Buffer</div>
           </div>
@@ -74,7 +98,7 @@
         </div>
         <div class="col-lg-2 col-md-4 col-6">
           <div class="sg-pipeline-step">
-            <i class="bi bi-diagram-3-fill text-info fs-3 d-block mb-2"></i>
+            <i class="bi bi-diagram-3-fill fs-3 d-block mb-2" style="color:var(--sg-text-muted)"></i>
             <div class="fw-bold small">ONNX Model</div>
             <div class="text-muted" style="font-size: 0.75rem">[1,64,156]</div>
           </div>
@@ -84,7 +108,7 @@
         </div>
         <div class="col-lg-2 col-md-4 col-6">
           <div class="sg-pipeline-step">
-            <i class="bi bi-chat-square-text-fill text-info fs-3 d-block mb-2"></i>
+            <i class="bi bi-chat-square-text-fill fs-3 d-block mb-2" style="color:var(--sg-text-muted)"></i>
             <div class="fw-bold small">CTC Decode</div>
             <div class="text-muted" style="font-size: 0.75rem">Gloss Tokens</div>
           </div>
@@ -94,16 +118,16 @@
       <div class="row g-4 mb-5">
         <div class="col-lg-6">
           <div class="sg-card h-100">
-            <h3 class="sg-card-title"><i class="bi bi-hand-index me-2 text-info"></i>26 Tracked Landmarks</h3>
+            <h3 class="sg-card-title">26 Tracked Landmarks</h3>
             <p class="sg-card-text mb-3">
               We extract a subset of landmarks from MediaPipe's full hand and pose models:
             </p>
             <table class="table table-sm mb-0" style="color: var(--sg-text-muted); font-size: 0.85rem">
               <thead>
                 <tr style="border-color: var(--sg-border)">
-                  <th style="color: var(--sg-primary-light); border-color: var(--sg-border)">Range</th>
-                  <th style="color: var(--sg-primary-light); border-color: var(--sg-border)">Count</th>
-                  <th style="color: var(--sg-primary-light); border-color: var(--sg-border)">Source</th>
+                  <th style="color: var(--sg-text); border-color: var(--sg-border)">Range</th>
+                  <th style="color: var(--sg-text); border-color: var(--sg-border)">Count</th>
+                  <th style="color: var(--sg-text); border-color: var(--sg-border)">Source</th>
                 </tr>
               </thead>
               <tbody>
@@ -128,15 +152,15 @@
         </div>
         <div class="col-lg-6">
           <div class="sg-card h-100">
-            <h3 class="sg-card-title"><i class="bi bi-speedometer2 me-2 text-info"></i>Performance</h3>
+            <h3 class="sg-card-title">Performance</h3>
             <p class="sg-card-text mb-3">
               Designed for real-time performance on consumer hardware:
             </p>
             <table class="table table-sm mb-0" style="color: var(--sg-text-muted); font-size: 0.85rem">
               <thead>
                 <tr style="border-color: var(--sg-border)">
-                  <th style="color: var(--sg-primary-light); border-color: var(--sg-border)">Metric</th>
-                  <th style="color: var(--sg-primary-light); border-color: var(--sg-border)">Value</th>
+                  <th style="color: var(--sg-text); border-color: var(--sg-border)">Metric</th>
+                  <th style="color: var(--sg-text); border-color: var(--sg-border)">Value</th>
                 </tr>
               </thead>
               <tbody>

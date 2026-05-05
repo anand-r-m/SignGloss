@@ -61,10 +61,10 @@ function injectFooter() {
 }
 
 function createTransitionOverlay() {
-  if (document.getElementById('warp-overlay')) return;
+  if (document.getElementById('sg-transition-overlay')) return;
   const overlay = document.createElement('div');
-  overlay.id = 'warp-overlay';
-  overlay.className = 'sg-page-transition';
+  overlay.id = 'sg-transition-overlay';
+  overlay.className = 'sg-transition-wipe';
   document.body.appendChild(overlay);
 }
 
@@ -90,12 +90,11 @@ function init() {
   injectFooter();
   interceptNavClicks();
 
-  const hasArrival = sessionStorage.getItem('sg-warp-active');
+  const hasArrival = sessionStorage.getItem('sg-transition-dir');
   if (hasArrival) {
-    sessionStorage.removeItem('sg-warp-active');
+    sessionStorage.removeItem('sg-transition-dir');
     playArrival();
   }
-
 }
 
 if (document.readyState === 'loading') {

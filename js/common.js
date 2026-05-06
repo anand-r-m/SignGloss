@@ -1,4 +1,4 @@
-import { startWarp, playArrival } from './warp-transition.js';
+import { initPaintTransition, startPaint, playPaintArrival } from './paint-transition.js';
 
 const NAV_LINKS = [
   { text: 'Home', href: 'index.html' },
@@ -60,14 +60,6 @@ function injectFooter() {
   `;
 }
 
-function createTransitionOverlay() {
-  if (document.getElementById('sg-transition-overlay')) return;
-  const overlay = document.createElement('div');
-  overlay.id = 'sg-transition-overlay';
-  overlay.className = 'sg-transition-wipe';
-  document.body.appendChild(overlay);
-}
-
 function interceptNavClicks() {
   document.addEventListener('click', (e) => {
     const link = e.target.closest('.sg-navbar a.nav-link, .warp-link');
@@ -80,20 +72,20 @@ function interceptNavClicks() {
     if (href === currentPage) return;
 
     e.preventDefault();
-    startWarp(href);
+    startPaint(href);
   });
 }
 
 function init() {
-  createTransitionOverlay();
+  initPaintTransition();
   injectNavbar();
   injectFooter();
   interceptNavClicks();
 
-  const hasArrival = sessionStorage.getItem('sg-transition-dir');
+  const hasArrival = sessionStorage.getItem('sg-paint-active');
   if (hasArrival) {
-    sessionStorage.removeItem('sg-transition-dir');
-    playArrival();
+    sessionStorage.removeItem('sg-paint-active');
+    playPaintArrival();
   }
 }
 

@@ -81,3 +81,70 @@ No glow. No neon. Just a controlled accent.
 - ONNX model loads from CDN WASM paths
 - Contact form validates
 - Visual: minimal dark, muted accent, controlled motion, layered depth
+
+==================== DEV A SECTION ====================
+
+## Transition System — Multi-Stroke Opposing Paint
+
+Replaced the previous directional slide+wipe transition with a multi-stroke paint brush system.
+
+### Core Concept
+
+On navigation, 4 large SVG path strokes sweep across the screen in alternating directions (L→R, R→L, L→R, R→L), covering the viewport like rapid brush strokes. After the page switches, strokes continue moving in the same direction and exit the opposite side, revealing the new page underneath.
+
+### Stroke Logic
+
+- 4 SVG `<path>` elements with thick curved shapes
+- Alternating directions: strokes 0,2 go left→right; strokes 1,3 go right→left
+- Each stroke has unique width, curve offset, and slight rotation (±2–4deg)
+- Staggered timing: 55ms between each stroke start
+- Two flat colors: `#2a1a1e` (muted dark red) and `#1e1a2e` (muted purple)
+- No gradients, no glow — flat bold fills only
+
+### Timing
+
+| Phase | Duration |
+|-------|----------|
+| Cover (strokes enter) | ~380ms |
+| Page navigation | fires after cover + max stagger |
+| Reveal (strokes exit) | ~370ms |
+| Total | ~750ms |
+| Easing | cubic-bezier(0.4, 0, 0.2, 1) |
+| Stagger | 55ms per stroke |
+
+### Direction Continuity
+
+- Cover: strokes translateX from off-screen to center (0%)
+- Reveal: strokes continue translateX in same direction to exit opposite side
+- No reversal — strokes move through, not back
+
+### Session Persistence
+
+- `sessionStorage.setItem('sg-paint-active', '1')` set before navigation
+- On arrival, checked and cleared — triggers reveal animation
+- Fallback: if animation fails, raw navigation fires after 1250ms timeout
+
+### Performance
+
+- Only `transform` properties animated (translateX + rotate)
+- `will-change: transform` on all stroke paths
+- Maximum 4 SVG paths (under the 5 limit)
+- ViewBox updates on resize for responsive behavior
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `js/paint-transition.js` | NEW — stroke generation, cover/reveal animation, SVG overlay |
+| `js/common.js` | Replaced warp-transition import with paint-transition; removed div overlay creation |
+| `css/style.css` | Replaced `.sg-transition-wipe` with `.transition-overlay-svg` + `.paint-stroke` |
+| `js/warp-transition.js` | DEPRECATED — gutted, marked for deletion |
+
+### Integration Notes
+
+- Same navigation interception pattern preserved (click delegate on `.sg-navbar a.nav-link, .warp-link`)
+- Same `preventDefault()` → animate → navigate flow
+- Same `sessionStorage` pattern for cross-page state
+- No per-page duplication — overlay injected once via `common.js` init
+- No external animation libraries used
+

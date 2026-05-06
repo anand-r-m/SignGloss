@@ -53,7 +53,7 @@ body {
   background: #3a3a44;
 }
 
-.sg-transition-wipe {
+.transition-overlay-svg {
   position: fixed;
   top: 0;
   left: 0;
@@ -61,9 +61,11 @@ body {
   height: 100vh;
   z-index: 9999;
   pointer-events: none;
-  background: var(--sg-bg-elevated);
-  transform: scaleX(0);
-  transform-origin: left;
+  overflow: hidden;
+}
+
+.paint-stroke {
+  will-change: transform;
 }
 
 .sg-navbar {

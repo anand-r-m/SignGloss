@@ -1,5 +1,3 @@
-import { initPaintTransition, startPaint, playPaintArrival } from './paint-transition.js';
-
 const NAV_LINKS = [
   { text: 'Home', href: 'index.html' },
   { text: 'About', href: 'about.html' },
@@ -43,7 +41,7 @@ function injectNavbar() {
         </div>
       </div>
     </nav>
-    <div style="height:72px"></div>
+    <div style="height:68px"></div>
   `;
 }
 
@@ -60,33 +58,9 @@ function injectFooter() {
   `;
 }
 
-function interceptNavClicks() {
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('.sg-navbar a.nav-link, .warp-link');
-    if (!link) return;
-
-    const href = link.getAttribute('href');
-    if (!href || href === '#' || href.startsWith('http') || href.startsWith('mailto')) return;
-
-    const currentPage = getCurrentPage();
-    if (href === currentPage) return;
-
-    e.preventDefault();
-    startPaint(href);
-  });
-}
-
 function init() {
-  initPaintTransition();
   injectNavbar();
   injectFooter();
-  interceptNavClicks();
-
-  const hasArrival = sessionStorage.getItem('sg-paint-active');
-  if (hasArrival) {
-    sessionStorage.removeItem('sg-paint-active');
-    playPaintArrival();
-  }
 }
 
 if (document.readyState === 'loading') {

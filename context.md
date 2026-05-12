@@ -148,3 +148,82 @@ On navigation, 4 large SVG path strokes sweep across the screen in alternating d
 - No per-page duplication — overlay injected once via `common.js` init
 - No external animation libraries used
 
+==================== DEV A SECTION ====================
+
+## Full UI/UX Redesign — May 2026
+
+### Chosen Design Style
+
+**Tactile Digital / Deformable UI** (Style #60 from ui-ux-pro-max skill database)
+- Warm, physical, spring-physics-driven
+- Avoids: glassmorphism, aurora gradients, neon cyberpunk, generic AI SaaS
+
+### Color Palette
+
+| Token | Hex | Role |
+|-------|-----|------|
+| `--surface-deep` | `#1A1614` | Page background |
+| `--surface-card` | `#252220` | Card backgrounds |
+| `--surface-raised` | `#322E2B` | Elevated elements |
+| `--accent-primary` | `#E8734A` | Warm terracotta accent |
+| `--accent-secondary` | `#D4A574` | Sand/gold secondary |
+| `--text-primary` | `#F0EBE3` | Body text |
+| `--text-muted` | `#9A8E82` | Muted text |
+| `--text-heading` | `#FAF7F2` | Headings |
+
+### Typography
+
+- Headings: **Syne** (weight 600-800)
+- Body: **Manrope** (weight 400-500)
+- Source: Google Fonts CDN
+
+### Motion System
+
+- Library: **Motion One** via CDN (`https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js`)
+- API: `const { animate, inView, stagger } = Motion;`
+- Spring config: `stiffness: 300, damping: 30`
+
+#### Animations Implemented
+
+| Animation | File | Trigger |
+|-----------|------|---------|
+| Staggered section entrance | `js/animations.js` | `inView()` |
+| Count-up stats | `js/animations.js` | `inView()`, fires once |
+| Draggable card carousel | `js/animations.js` | User drag / arrow click |
+| Typewriter gloss output | `js/animations.js` | New gloss result |
+| "SignGloss" intro spin | `js/animations.js` | Page load (index only) |
+| Paint-stroke page wipe | `js/transitions.js` | Link click / page load |
+
+### Transition System
+
+- SVG paint-stroke wipe (replaces starfield warp)
+- Exit: stroke sweeps LEFT → RIGHT
+- Enter: stroke sweeps RIGHT → LEFT
+- Duration: 0.55s, easing: `[0.76, 0, 0.24, 1]`
+- State: `sessionStorage('sg-transition-active')`
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `css/style.css` | Complete rewrite — new design system |
+| `js/common.js` | Simplified — removed warp dependency |
+| `js/transitions.js` | NEW — paint-stroke SVG transition |
+| `js/animations.js` | NEW — Motion One shared animations |
+| `index.html` | Full redesign — intro, carousel, stats |
+| `about.html` | Restyled to new system |
+| `operations.html` | Restyled, typewriter gloss |
+| `demo.html` | Restyled |
+| `learn.html` | Restyled |
+| `team.html` | Restyled |
+
+### Files NOT Modified (Dev B Protected)
+
+- `js/contract.js`
+- `js/bridge.js`
+- `js/inference-worker.js`
+- `js/decoder.js`
+- `js/operations-inference.js`
+- `js/operations-capture.js`
+- `models/signgloss_stub.onnx`
+

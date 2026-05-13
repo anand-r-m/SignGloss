@@ -9,6 +9,211 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .sg-collage-container {
+      position: relative;
+      width: 100%;
+      min-height: 500px;
+      background-image: url('assets/background.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .sg-collage-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 8px;
+      position: relative;
+    }
+
+    .sg-collage-tile {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.3s ease;
+      background-image: url('assets/background.jpg');
+      background-size: 900px auto;
+    }
+
+    .sg-collage-tile:hover {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .sg-collage-tile::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(10,10,10,0.7);
+      transition: background 0.3s ease;
+      z-index: 1;
+    }
+
+    .sg-collage-tile:hover::before {
+      background: rgba(10,10,10,0.5);
+    }
+
+    .sg-collage-tile-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem 1.5rem;
+    }
+
+    .sg-collage-tile:nth-child(1) {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      min-height: 280px;
+      background-position: 0% 0%;
+    }
+
+    .sg-collage-tile:nth-child(2) {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      min-height: 160px;
+      background-position: 40% 0%;
+    }
+
+    .sg-collage-tile:nth-child(3) {
+      grid-column: 3 / 4;
+      grid-row: 1 / 2;
+      min-height: 200px;
+      background-position: 70% 0%;
+    }
+
+    .sg-collage-tile:nth-child(4) {
+      grid-column: 2 / 4;
+      grid-row: 2 / 3;
+      min-height: 140px;
+      background-position: 40% 60%;
+    }
+
+    .sg-collage-tile:nth-child(5) {
+      grid-column: 1 / 3;
+      grid-row: 3 / 4;
+      min-height: 160px;
+      background-position: 0% 100%;
+    }
+
+    .sg-collage-tile-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #F5F5F5;
+    }
+
+    .sg-collage-tile-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: #A0A0A0;
+      margin-top: 0.3rem;
+    }
+
+    .sg-tile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9000;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      overflow-y: auto;
+    }
+
+    .sg-tile-overlay.active {
+      display: flex;
+    }
+
+    .sg-tile-overlay-content {
+      max-width: 700px;
+      width: 100%;
+      background-image: url('assets/background.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: tileExpand 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sg-tile-overlay-content::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(10,10,10,0.75);
+      z-index: 0;
+    }
+
+    .sg-tile-overlay-inner {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem;
+    }
+
+    .sg-tile-overlay-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 2;
+      background: none;
+      border: none;
+      color: #A0A0A0;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .sg-tile-overlay-close:hover {
+      color: #F5F5F5;
+    }
+
+    @keyframes tileExpand {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .sg-tile-overlay-inner h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #F5F5F5;
+      margin-bottom: 1rem;
+    }
+
+    .sg-tile-overlay-inner p,
+    .sg-tile-overlay-inner li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: #A0A0A0;
+      line-height: 1.7;
+    }
+
+    .sg-tile-overlay-inner strong {
+      color: #F5F5F5;
+    }
+
+    @media (max-width: 768px) {
+      .sg-collage-grid {
+        grid-template-columns: 1fr;
+      }
+      .sg-collage-tile {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        min-height: 120px !important;
+      }
+    }
+  </style>
 </head>
 <body data-bs-theme="dark">
 
@@ -26,81 +231,121 @@
 
         <h2 class="sg-section-title text-center mb-4 animate-child" style="font-size: 1.6rem">Our System</h2>
 
-        <div class="sg-about-cards-grid animate-child" id="about-cards">
-          <div class="sg-about-card" data-card="pipeline">
-            <div class="sg-about-card-label">Pipeline</div>
+        <div class="sg-collage-grid animate-child">
+          <div class="sg-collage-tile" data-tile="pipeline">
+            <div class="sg-collage-tile-content">
+              <div class="sg-collage-tile-label">Pipeline</div>
+              <div class="sg-collage-tile-sub">Five sequential stages, all client-side</div>
+            </div>
           </div>
-          <div class="sg-about-card" data-card="architecture">
-            <div class="sg-about-card-label">Transformer Architecture</div>
+          <div class="sg-collage-tile" data-tile="architecture">
+            <div class="sg-collage-tile-content">
+              <div class="sg-collage-tile-label">Transformer Architecture</div>
+              <div class="sg-collage-tile-sub">Encoder with positional encoding</div>
+            </div>
           </div>
-          <div class="sg-about-card" data-card="datasets">
-            <div class="sg-about-card-label">Datasets Used</div>
+          <div class="sg-collage-tile" data-tile="datasets">
+            <div class="sg-collage-tile-content">
+              <div class="sg-collage-tile-label">Datasets Used</div>
+              <div class="sg-collage-tile-sub">INCLUDE ISL dataset</div>
+            </div>
           </div>
-          <div class="sg-about-card" data-card="impact">
-            <div class="sg-about-card-label">Impact</div>
+          <div class="sg-collage-tile" data-tile="impact">
+            <div class="sg-collage-tile-content">
+              <div class="sg-collage-tile-label">Impact</div>
+              <div class="sg-collage-tile-sub">Bridging the communication gap</div>
+            </div>
           </div>
-          <div class="sg-about-card" data-card="future">
-            <div class="sg-about-card-label">Future Scope</div>
+          <div class="sg-collage-tile" data-tile="future">
+            <div class="sg-collage-tile-content">
+              <div class="sg-collage-tile-label">Future Scope</div>
+              <div class="sg-collage-tile-sub">Sentence-level, multi-language, mobile</div>
+            </div>
           </div>
         </div>
 
-        <div class="sg-about-expand" id="expand-pipeline">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Pipeline</h3>
-          <p>The SignGloss pipeline operates in five sequential stages, all executing client-side:</p>
-          <ol>
-            <li><strong style="color: var(--text-heading)">Camera Capture</strong> — WebRTC captures video at 30 FPS from the user's webcam.</li>
-            <li><strong style="color: var(--text-heading)">MediaPipe Landmarks</strong> — Google's MediaPipe Tasks Vision extracts 26 hand and body landmarks per frame (x, y, z coordinates).</li>
-            <li><strong style="color: var(--text-heading)">Web Worker Processing</strong> — A dedicated Web Worker computes velocity features and buffers 64 frames into a sliding window.</li>
-            <li><strong style="color: var(--text-heading)">ONNX Inference</strong> — The ONNX Runtime runs the trained transformer on the buffered tensor with shape [1, 64, 156], producing output [1, 64, 601].</li>
-            <li><strong style="color: var(--text-heading)">CTC Decoding</strong> — Greedy CTC decoding collapses the model output into readable gloss tokens, removing blanks and repeated predictions.</li>
-          </ol>
+        <div class="sg-tile-overlay" id="overlay-pipeline">
+          <div class="sg-tile-overlay-content">
+            <button class="sg-tile-overlay-close" aria-label="Close">&times;</button>
+            <div class="sg-tile-overlay-inner">
+              <h3>Pipeline</h3>
+              <p>The SignGloss pipeline operates in five sequential stages, all executing client-side:</p>
+              <ol>
+                <li><strong>Camera Capture</strong> — WebRTC captures video at 30 FPS from the user's webcam.</li>
+                <li><strong>MediaPipe Landmarks</strong> — Google's MediaPipe Tasks Vision extracts 26 hand and body landmarks per frame (x, y, z coordinates).</li>
+                <li><strong>Web Worker Processing</strong> — A dedicated Web Worker computes velocity features and buffers 64 frames into a sliding window.</li>
+                <li><strong>ONNX Inference</strong> — The ONNX Runtime runs the trained transformer on the buffered tensor with shape [1, 64, 156], producing output [1, 64, 601].</li>
+                <li><strong>CTC Decoding</strong> — Greedy CTC decoding collapses the model output into readable gloss tokens, removing blanks and repeated predictions.</li>
+              </ol>
+            </div>
+          </div>
         </div>
 
-        <div class="sg-about-expand" id="expand-architecture">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Transformer Architecture</h3>
-          <p>The model uses a transformer encoder architecture with positional encoding. It processes 64-frame windows of landmark data:</p>
-          <ul>
-            <li>Input: 156 features per frame (26 landmarks × 3 coordinates × 2 for position + velocity)</li>
-            <li>Tensor shape: [1, 64, 156] → model → [1, 64, 601]</li>
-            <li>Output: 601 classes (600 gloss tokens + 1 blank token for CTC)</li>
-            <li>Positional encoding preserves temporal ordering within the 64-frame window</li>
-            <li>Exported as ONNX format for browser-based inference via ONNX Runtime Web (WASM backend)</li>
-          </ul>
+        <div class="sg-tile-overlay" id="overlay-architecture">
+          <div class="sg-tile-overlay-content">
+            <button class="sg-tile-overlay-close" aria-label="Close">&times;</button>
+            <div class="sg-tile-overlay-inner">
+              <h3>Transformer Architecture</h3>
+              <p>The model uses a transformer encoder architecture with positional encoding. It processes 64-frame windows of landmark data:</p>
+              <ul>
+                <li>Input: 156 features per frame (26 landmarks × 3 coordinates × 2 for position + velocity)</li>
+                <li>Tensor shape: [1, 64, 156] → model → [1, 64, 601]</li>
+                <li>Output: 601 classes (600 gloss tokens + 1 blank token for CTC)</li>
+                <li>Positional encoding preserves temporal ordering within the 64-frame window</li>
+                <li>Exported as ONNX format for browser-based inference via ONNX Runtime Web (WASM backend)</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div class="sg-about-expand" id="expand-datasets">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Datasets Used</h3>
-          <p>The model was trained on the INCLUDE ISL dataset:</p>
-          <ul>
-            <li>600 gloss classes covering common Indian Sign Language signs</li>
-            <li>Webcam recordings of signers performing isolated and continuous signs</li>
-            <li>Landmark sequences extracted via MediaPipe, normalized and augmented</li>
-            <li>Train/validation/test splits ensuring signer-independent evaluation</li>
-          </ul>
+        <div class="sg-tile-overlay" id="overlay-datasets">
+          <div class="sg-tile-overlay-content">
+            <button class="sg-tile-overlay-close" aria-label="Close">&times;</button>
+            <div class="sg-tile-overlay-inner">
+              <h3>Datasets Used</h3>
+              <p>The model was trained on the INCLUDE ISL dataset:</p>
+              <ul>
+                <li>600 gloss classes covering common Indian Sign Language signs</li>
+                <li>Webcam recordings of signers performing isolated and continuous signs</li>
+                <li>Landmark sequences extracted via MediaPipe, normalized and augmented</li>
+                <li>Train/validation/test splits ensuring signer-independent evaluation</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div class="sg-about-expand" id="expand-impact">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Impact</h3>
-          <p>SignGloss addresses a critical communication barrier:</p>
-          <ul>
-            <li>Over 1.8 million deaf and hard-of-hearing individuals in India rely on ISL</li>
-            <li>Runs entirely in the browser — no installation, no app store, no server costs</li>
-            <li>Complete privacy: no video or data ever leaves the user's device</li>
-            <li>Works on any modern browser with a webcam — desktop or laptop</li>
-            <li>Zero-cost deployment makes it accessible to schools, NGOs, and individuals</li>
-          </ul>
+        <div class="sg-tile-overlay" id="overlay-impact">
+          <div class="sg-tile-overlay-content">
+            <button class="sg-tile-overlay-close" aria-label="Close">&times;</button>
+            <div class="sg-tile-overlay-inner">
+              <h3>Impact</h3>
+              <p>SignGloss addresses a critical communication barrier:</p>
+              <ul>
+                <li>Over 1.8 million deaf and hard-of-hearing individuals in India rely on ISL</li>
+                <li>Runs entirely in the browser — no installation, no app store, no server costs</li>
+                <li>Complete privacy: no video or data ever leaves the user's device</li>
+                <li>Works on any modern browser with a webcam — desktop or laptop</li>
+                <li>Zero-cost deployment makes it accessible to schools, NGOs, and individuals</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div class="sg-about-expand" id="expand-future">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Future Scope</h3>
-          <ul>
-            <li>Sentence-level translation — moving beyond isolated gloss tokens to full sentence output</li>
-            <li>Support for additional sign languages (ASL, BSL, and others)</li>
-            <li>Larger and more diverse training datasets for improved accuracy</li>
-            <li>Mobile device support with optimized lightweight models</li>
-            <li>Offline capability via service workers and cached model files</li>
-            <li>Two-way communication: text-to-sign avatar generation</li>
-          </ul>
+        <div class="sg-tile-overlay" id="overlay-future">
+          <div class="sg-tile-overlay-content">
+            <button class="sg-tile-overlay-close" aria-label="Close">&times;</button>
+            <div class="sg-tile-overlay-inner">
+              <h3>Future Scope</h3>
+              <ul>
+                <li>Sentence-level translation — moving beyond isolated gloss tokens to full sentence output</li>
+                <li>Support for additional sign languages (ASL, BSL, and others)</li>
+                <li>Larger and more diverse training datasets for improved accuracy</li>
+                <li>Mobile device support with optimized lightweight models</li>
+                <li>Offline capability via service workers and cached model files</li>
+                <li>Two-way communication: text-to-sign avatar generation</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -114,34 +359,32 @@
   <script src="js/animations.js"></script>
   <script>
   (function() {
-    var cards = document.querySelectorAll('.sg-about-card');
-    var expandPanels = {
-      pipeline: document.getElementById('expand-pipeline'),
-      architecture: document.getElementById('expand-architecture'),
-      datasets: document.getElementById('expand-datasets'),
-      impact: document.getElementById('expand-impact'),
-      future: document.getElementById('expand-future')
-    };
-    var activeCard = null;
+    var tiles = document.querySelectorAll('.sg-collage-tile');
 
-    cards.forEach(function(card) {
-      card.addEventListener('click', function() {
-        var key = card.getAttribute('data-card');
-        var panel = expandPanels[key];
-        if (!panel) return;
-
-        if (activeCard === key) {
-          panel.classList.remove('active');
-          activeCard = null;
-          return;
+    tiles.forEach(function(tile) {
+      tile.addEventListener('click', function() {
+        var key = tile.getAttribute('data-tile');
+        var overlay = document.getElementById('overlay-' + key);
+        if (overlay) {
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
         }
+      });
+    });
 
-        Object.keys(expandPanels).forEach(function(k) {
-          expandPanels[k].classList.remove('active');
-        });
+    document.querySelectorAll('.sg-tile-overlay-close').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        btn.closest('.sg-tile-overlay').classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
 
-        panel.classList.add('active');
-        activeCard = key;
+    document.querySelectorAll('.sg-tile-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
       });
     });
   })();

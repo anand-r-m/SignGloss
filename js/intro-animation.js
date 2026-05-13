@@ -3,6 +3,11 @@ function initIntroAnimation() {
   var canvas = document.getElementById('sg-intro-canvas');
   if (!overlay || !canvas) return;
 
+  if (sessionStorage.getItem('sg-intro-played')) {
+    overlay.remove();
+    return;
+  }
+
   var ctx = canvas.getContext('2d');
   var W = window.innerWidth;
   var H = window.innerHeight;
@@ -11,13 +16,14 @@ function initIntroAnimation() {
   canvas.height = H * dpr;
   ctx.scale(dpr, dpr);
 
+  var textPoints = buildTextPoints(W, H);
   var textMask = buildTextMask(W, H);
   var nodes = [];
   var edges = [];
-  var dijkstraPath = [];
+  var pathSegments = [];
   var startTime = performance.now();
 
-  var NODE_COUNT = 150;
+  var NODE_COUNT = 160;
   var HUB_RATIO = 0.12;
   var CONNECT_RADIUS = 400;
   var MAX_CONNECTIONS = 6;
@@ -34,6 +40,31 @@ function initIntroAnimation() {
     octx.fillStyle = '#FFFFFF';
     octx.fillText('SignGloss', w / 2, h / 2);
     return octx.getImageData(0, 0, w, h);
+  }
+
+  function buildTextPoints(w, h) {
+    var offscreen = document.createElement('canvas');
+    offscreen.width = w;
+    offscreen.height = h;
+    var octx = offscreen.getContext('2d');
+    var fontSize = Math.min(w * 0.12, 160);
+    octx.font = '700 ' + fontSize + 'px Space Grotesk, sans-serif';
+    octx.textAlign = 'center';
+    octx.textBaseline = 'middle';
+    octx.fillStyle = '#FFFFFF';
+    octx.fillText('SignGloss', w / 2, h / 2);
+    var imageData = octx.getImageData(0, 0, w, h);
+    var pts = [];
+    var step = 6;
+    for (var y = 0; y < h; y += step) {
+      for (var x = 0; x < w; x += step) {
+        var idx = (y * w + x) * 4;
+        if (imageData.data[idx + 3] > 128) {
+          pts.push({ x: x, y: y });
+        }
+      }
+    }
+    return pts;
   }
 
   function isInsideText(x, y) {
@@ -85,8 +116,7 @@ function initIntroAnimation() {
         connections: 0,
         depth: 0.3 + Math.random() * 0.7,
         spawnWave: 0,
-        visible: false,
-        bloomPulse: 0
+        visible: false
       });
     }
   }
@@ -151,82 +181,23 @@ function initIntroAnimation() {
     });
   }
 
-  function buildDijkstraPath() {
-    if (nodes.length < 2) return;
-
-    var startIdx = 0;
-    var endIdx = 0;
-    var minStartDist = Infinity;
-    var minEndDist = Infinity;
-
-    for (var i = 0; i < nodes.length; i++) {
-      var dStart = Math.sqrt(nodes[i].x * nodes[i].x + nodes[i].y * nodes[i].y);
-      var dEnd = Math.sqrt((nodes[i].x - W) * (nodes[i].x - W) + (nodes[i].y - H) * (nodes[i].y - H));
-      if (dStart < minStartDist) { minStartDist = dStart; startIdx = i; }
-      if (dEnd < minEndDist) { minEndDist = dEnd; endIdx = i; }
-    }
-
-    var adj = [];
-    for (var i = 0; i < nodes.length; i++) adj.push([]);
-    edges.forEach(function(e, idx) {
-      var dx = nodes[e.a].x - nodes[e.b].x;
-      var dy = nodes[e.a].y - nodes[e.b].y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      adj[e.a].push({ node: e.b, dist: dist, edge: idx });
-      adj[e.b].push({ node: e.a, dist: dist, edge: idx });
+  function buildTextPath() {
+    if (textPoints.length < 2) return;
+    var sorted = textPoints.slice().sort(function(a, b) {
+      return a.x === b.x ? a.y - b.y : a.x - b.x;
     });
-
-    var dist = [];
-    var prev = [];
-    var prevEdge = [];
-    var visited = [];
-    for (var i = 0; i < nodes.length; i++) {
-      dist.push(Infinity);
-      prev.push(-1);
-      prevEdge.push(-1);
-      visited.push(false);
+    var step = Math.max(1, Math.floor(sorted.length / 80));
+    var sampled = [];
+    for (var i = 0; i < sorted.length; i += step) {
+      sampled.push(sorted[i]);
     }
-    dist[startIdx] = 0;
-
-    for (var step = 0; step < nodes.length; step++) {
-      var u = -1;
-      var minD = Infinity;
-      for (var i = 0; i < nodes.length; i++) {
-        if (!visited[i] && dist[i] < minD) {
-          minD = dist[i];
-          u = i;
-        }
-      }
-      if (u === -1) break;
-      visited[u] = true;
-
-      adj[u].forEach(function(neighbor) {
-        var alt = dist[u] + neighbor.dist;
-        if (alt < dist[neighbor.node]) {
-          dist[neighbor.node] = alt;
-          prev[neighbor.node] = u;
-          prevEdge[neighbor.node] = neighbor.edge;
-        }
-      });
-    }
-
-    var path = [];
-    var cur = endIdx;
-    while (cur !== -1 && cur !== startIdx) {
-      path.push({ node: cur, edge: prevEdge[cur] });
-      cur = prev[cur];
-    }
-    if (cur === startIdx) {
-      path.push({ node: startIdx, edge: -1 });
-    }
-    path.reverse();
-    dijkstraPath = path;
+    pathSegments = sampled;
   }
 
   generateNodes();
   generateEdges();
   assignWaves();
-  buildDijkstraPath();
+  buildTextPath();
 
   function render(timestamp) {
     var elapsed = timestamp - startTime;
@@ -306,52 +277,45 @@ function initIntroAnimation() {
       ctx.fill();
     });
 
-    var djStart = 2000;
-    var djEnd = 4500;
-    if (elapsed >= djStart && dijkstraPath.length > 1) {
-      var djProgress = Math.min(1, (elapsed - djStart) / (djEnd - djStart));
-      var pathLen = dijkstraPath.length;
-      var revealCount = Math.floor(djProgress * pathLen);
+    var pathStart = 2000;
+    var pathEnd = 4500;
+    if (elapsed >= pathStart && pathSegments.length > 1) {
+      var pathProgress = Math.min(1, (elapsed - pathStart) / (pathEnd - pathStart));
+      var revealCount = Math.floor(pathProgress * pathSegments.length);
 
-      for (var i = 0; i < revealCount && i < pathLen - 1; i++) {
-        var edgeIdx = dijkstraPath[i + 1].edge;
-        if (edgeIdx < 0) continue;
-        var e = edges[edgeIdx];
-        var na = nodes[e.a];
-        var nb = nodes[e.b];
+      ctx.beginPath();
+      ctx.moveTo(pathSegments[0].x, pathSegments[0].y);
+      for (var i = 1; i < revealCount && i < pathSegments.length; i++) {
+        ctx.lineTo(pathSegments[i].x, pathSegments[i].y);
+      }
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
 
+      for (var j = 0; j < revealCount && j < pathSegments.length; j++) {
+        var pt = pathSegments[j];
+        ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
-        ctx.moveTo(na.x, na.y);
-        ctx.lineTo(nb.x, nb.y);
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
+        ctx.fill();
 
-        var nodeIdx = dijkstraPath[i].node;
-        var pn = nodes[nodeIdx];
-        var pulseR = pn.bloomR * (1 + 0.1 * Math.sin(elapsed * 0.005));
-        var grad = ctx.createRadialGradient(pn.x, pn.y, 0, pn.x, pn.y, pulseR);
-        grad.addColorStop(0, 'rgba(255,255,255,0.5)');
-        grad.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = grad;
+        var glow = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, 10);
+        glow.addColorStop(0, 'rgba(255,255,255,0.4)');
+        glow.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(pn.x, pn.y, pulseR, 0, Math.PI * 2);
+        ctx.arc(pt.x, pt.y, 10, 0, Math.PI * 2);
         ctx.fill();
       }
-    }
-
-    if (elapsed >= 4500 && elapsed < 5000) {
-      var breathT = Math.sin(elapsed * 0.006) * 0.1;
-      nodes.forEach(function(n) {
-        if (!n.visible) return;
-        n.bloomPulse = breathT;
-      });
     }
 
     if (elapsed >= 5000) {
       var fadeT = Math.min(1, (elapsed - 5000) / 500);
       overlay.style.opacity = 1 - fadeT;
       if (fadeT >= 1) {
+        sessionStorage.setItem('sg-intro-played', '1');
         overlay.remove();
         return;
       }

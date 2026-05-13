@@ -218,53 +218,26 @@
       var prevBtn = document.getElementById('carousel-prev');
       var nextBtn = document.getElementById('carousel-next');
       var cards = track.querySelectorAll('.sg-video-card');
-      var cardWidth = 316;
-      var gap = 24;
-      var itemWidth = cardWidth + gap;
       var totalCards = cards.length;
+      var currentIndex = 0;
 
-      cards.forEach(function(card) {
-        var clone = card.cloneNode(true);
-        track.appendChild(clone);
-      });
-
-      cards.forEach(function(card) {
-        var clone = card.cloneNode(true);
-        track.appendChild(clone);
-      });
-
-      var scrolling = false;
-
-      function checkLoop() {
-        var maxScroll = itemWidth * totalCards;
-        if (track.scrollLeft >= maxScroll * 2) {
-          track.style.scrollBehavior = 'auto';
-          track.scrollLeft = track.scrollLeft - maxScroll;
-          track.style.scrollBehavior = 'smooth';
-        }
-        if (track.scrollLeft <= 0) {
-          track.style.scrollBehavior = 'auto';
-          track.scrollLeft = track.scrollLeft + maxScroll;
-          track.style.scrollBehavior = 'smooth';
-        }
+      function getItemWidth() {
+        return cards[0].offsetWidth + 24;
       }
 
-      track.addEventListener('scroll', function() {
-        if (!scrolling) {
-          scrolling = true;
-          requestAnimationFrame(function() {
-            checkLoop();
-            scrolling = false;
-          });
-        }
-      });
+      function scrollToIndex(index) {
+        var itemWidth = getItemWidth();
+        track.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+      }
 
       prevBtn.addEventListener('click', function() {
-        track.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+        scrollToIndex(currentIndex);
       });
 
       nextBtn.addEventListener('click', function() {
-        track.scrollBy({ left: itemWidth, behavior: 'smooth' });
+        currentIndex = (currentIndex + 1) % totalCards;
+        scrollToIndex(currentIndex);
       });
 
       var isDragging = false;
@@ -292,10 +265,6 @@
         var walk = (x - startX) * 1.5;
         track.scrollLeft = scrollLeft - walk;
       });
-
-      track.style.scrollBehavior = 'auto';
-      track.scrollLeft = itemWidth * totalCards;
-      track.style.scrollBehavior = 'smooth';
     })();
   </script>
 </body>

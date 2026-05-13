@@ -217,14 +217,54 @@
       var track = document.getElementById('video-carousel');
       var prevBtn = document.getElementById('carousel-prev');
       var nextBtn = document.getElementById('carousel-next');
+      var cards = track.querySelectorAll('.sg-video-card');
       var cardWidth = 316;
+      var gap = 24;
+      var itemWidth = cardWidth + gap;
+      var totalCards = cards.length;
+
+      cards.forEach(function(card) {
+        var clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+
+      cards.forEach(function(card) {
+        var clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+
+      var scrolling = false;
+
+      function checkLoop() {
+        var maxScroll = itemWidth * totalCards;
+        if (track.scrollLeft >= maxScroll * 2) {
+          track.style.scrollBehavior = 'auto';
+          track.scrollLeft = track.scrollLeft - maxScroll;
+          track.style.scrollBehavior = 'smooth';
+        }
+        if (track.scrollLeft <= 0) {
+          track.style.scrollBehavior = 'auto';
+          track.scrollLeft = track.scrollLeft + maxScroll;
+          track.style.scrollBehavior = 'smooth';
+        }
+      }
+
+      track.addEventListener('scroll', function() {
+        if (!scrolling) {
+          scrolling = true;
+          requestAnimationFrame(function() {
+            checkLoop();
+            scrolling = false;
+          });
+        }
+      });
 
       prevBtn.addEventListener('click', function() {
-        track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        track.scrollBy({ left: -itemWidth, behavior: 'smooth' });
       });
 
       nextBtn.addEventListener('click', function() {
-        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        track.scrollBy({ left: itemWidth, behavior: 'smooth' });
       });
 
       var isDragging = false;
@@ -252,6 +292,10 @@
         var walk = (x - startX) * 1.5;
         track.scrollLeft = scrollLeft - walk;
       });
+
+      track.style.scrollBehavior = 'auto';
+      track.scrollLeft = itemWidth * totalCards;
+      track.style.scrollBehavior = 'smooth';
     })();
   </script>
 </body>

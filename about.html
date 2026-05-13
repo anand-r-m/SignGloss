@@ -3,177 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SignGloss — About</title>
+  <title>SignGloss — How We Did It</title>
   <meta name="description" content="Learn how SignGloss works — from camera capture and MediaPipe landmark extraction to ONNX inference and CTC decoding, all running in your browser.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-bs-theme="dark">
+
   <div id="navbar-placeholder"></div>
 
-  <section class="sg-section">
-    <div class="container">
-      <div class="text-center mb-5">
-        <div class="sg-badge sg-badge-primary mb-3 animate-child">How It Works</div>
-        <h1 class="sg-section-title animate-child" style="font-size: clamp(2rem, 4vw, 2.8rem)">About SignGloss</h1>
-        <p class="sg-section-subtitle animate-child" style="max-width: 640px; margin: 0 auto">
-          A client-side pipeline that translates Indian Sign Language into gloss tokens using webcam input, MediaPipe, and ONNX neural networks.
-        </p>
-      </div>
+  <main>
+    <section class="sg-section" style="padding-top: 7rem">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h1 class="sg-section-title animate-child" style="font-size: clamp(2rem, 4vw, 2.8rem)">How We Did It</h1>
+          <p class="sg-section-subtitle animate-child" style="max-width: 640px; margin: 1rem auto 0">
+            SignGloss is a browser-based real-time ISL translation system. It captures webcam input, extracts landmarks with MediaPipe, runs ONNX neural network inference, and decodes output using CTC — all client-side with zero server dependency.
+          </p>
+        </div>
 
-      <div class="row g-4 mb-5">
-        <div class="col-lg-8 mx-auto">
-          <div class="sg-card animate-child">
-            <h2 class="sg-card-title" style="font-size: 1.3rem">Project Overview</h2>
-            <p class="sg-card-text mt-3">
-              SignGloss is a real-time Continuous Sign Language Recognition (CSLR) system that runs entirely in the browser. It captures your webcam feed, extracts 26 key hand and body landmarks using Google's MediaPipe, then feeds those features into an ONNX neural network for inference. The output is decoded using CTC (Connectionist Temporal Classification) to produce readable gloss tokens.
-            </p>
-            <h4 style="color: var(--accent-secondary); font-family: var(--font-heading); font-size: 1rem; margin-top: 1.5rem">What the System Does</h4>
-            <p class="sg-card-text">SignGloss translates Indian Sign Language (ISL) gestures into gloss tokens — standardized text labels representing individual signs. It processes continuous signing, not just isolated gestures, making it suitable for real conversation flows.</p>
+        <h2 class="sg-section-title text-center mb-4 animate-child" style="font-size: 1.6rem">Our System</h2>
 
-            <h4 style="color: var(--accent-secondary); font-family: var(--font-heading); font-size: 1rem; margin-top: 1.2rem">How It Works</h4>
-            <p class="sg-card-text">The pipeline runs in five sequential stages, all executing client-side:</p>
-            <ul class="sg-card-text" style="padding-left: 1.2rem">
-              <li>The webcam captures video at 30 FPS via WebRTC</li>
-              <li>MediaPipe extracts 26 hand and body landmarks per frame (x, y, z coordinates)</li>
-              <li>A Web Worker computes velocity features and buffers 64 frames into a sliding window</li>
-              <li>The ONNX Runtime runs neural network inference on the buffered tensor [1, 64, 156]</li>
-              <li>CTC greedy decoding collapses model output into readable gloss tokens</li>
-            </ul>
+        <div class="sg-about-cards-grid animate-child" id="about-cards">
+          <div class="sg-about-card" data-card="pipeline">
+            <div class="sg-about-card-label">Pipeline</div>
+          </div>
+          <div class="sg-about-card" data-card="architecture">
+            <div class="sg-about-card-label">Transformer Architecture</div>
+          </div>
+          <div class="sg-about-card" data-card="datasets">
+            <div class="sg-about-card-label">Datasets Used</div>
+          </div>
+          <div class="sg-about-card" data-card="impact">
+            <div class="sg-about-card-label">Impact</div>
+          </div>
+          <div class="sg-about-card" data-card="future">
+            <div class="sg-about-card-label">Future Scope</div>
+          </div>
+        </div>
 
-            <h4 style="color: var(--accent-secondary); font-family: var(--font-heading); font-size: 1rem; margin-top: 1.2rem">Key Components</h4>
-            <ul class="sg-card-text" style="padding-left: 1.2rem">
-              <li><strong style="color: var(--text-heading)">MediaPipe Tasks Vision</strong> — Google's ML library for real-time hand and pose landmark detection directly in the browser</li>
-              <li><strong style="color: var(--text-heading)">ONNX Runtime Web</strong> — runs the trained neural network using WebAssembly for near-native inference speed</li>
-              <li><strong style="color: var(--text-heading)">Web Workers</strong> — keeps inference off the main thread so the UI stays responsive</li>
-              <li><strong style="color: var(--text-heading)">CTC Decoding</strong> — Connectionist Temporal Classification handles the variable-length alignment between frames and output tokens</li>
-            </ul>
-            <p class="sg-card-text">No data ever leaves your device. There is no server, no API, and no cloud dependency.</p>
-          </div>
+        <div class="sg-about-expand" id="expand-pipeline">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Pipeline</h3>
+          <p>The SignGloss pipeline operates in five sequential stages, all executing client-side:</p>
+          <ol>
+            <li><strong style="color: var(--text-heading)">Camera Capture</strong> — WebRTC captures video at 30 FPS from the user's webcam.</li>
+            <li><strong style="color: var(--text-heading)">MediaPipe Landmarks</strong> — Google's MediaPipe Tasks Vision extracts 26 hand and body landmarks per frame (x, y, z coordinates).</li>
+            <li><strong style="color: var(--text-heading)">Web Worker Processing</strong> — A dedicated Web Worker computes velocity features and buffers 64 frames into a sliding window.</li>
+            <li><strong style="color: var(--text-heading)">ONNX Inference</strong> — The ONNX Runtime runs the trained transformer on the buffered tensor with shape [1, 64, 156], producing output [1, 64, 601].</li>
+            <li><strong style="color: var(--text-heading)">CTC Decoding</strong> — Greedy CTC decoding collapses the model output into readable gloss tokens, removing blanks and repeated predictions.</li>
+          </ol>
         </div>
-      </div>
 
-      <div class="text-center mb-4">
-        <h2 class="sg-section-title animate-child">The Pipeline</h2>
-        <p class="sg-section-subtitle animate-child">From camera to gloss in five stages</p>
-      </div>
+        <div class="sg-about-expand" id="expand-architecture">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Transformer Architecture</h3>
+          <p>The model uses a transformer encoder architecture with positional encoding. It processes 64-frame windows of landmark data:</p>
+          <ul>
+            <li>Input: 156 features per frame (26 landmarks × 3 coordinates × 2 for position + velocity)</li>
+            <li>Tensor shape: [1, 64, 156] → model → [1, 64, 601]</li>
+            <li>Output: 601 classes (600 gloss tokens + 1 blank token for CTC)</li>
+            <li>Positional encoding preserves temporal ordering within the 64-frame window</li>
+            <li>Exported as ONNX format for browser-based inference via ONNX Runtime Web (WASM backend)</li>
+          </ul>
+        </div>
 
-      <div class="row g-3 align-items-center justify-content-center mb-5">
-        <div class="col-lg-2 col-md-4 col-6">
-          <div class="sg-pipeline-step animate-child">
-            <i class="bi bi-camera-video-fill fs-3 d-block mb-2" style="color:var(--text-muted)"></i>
-            <div class="fw-bold small">Camera</div>
-            <div style="color:var(--text-muted); font-size: 0.75rem">WebRTC 30fps</div>
-          </div>
+        <div class="sg-about-expand" id="expand-datasets">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Datasets Used</h3>
+          <p>The model was trained on the INCLUDE ISL dataset:</p>
+          <ul>
+            <li>600 gloss classes covering common Indian Sign Language signs</li>
+            <li>Webcam recordings of signers performing isolated and continuous signs</li>
+            <li>Landmark sequences extracted via MediaPipe, normalized and augmented</li>
+            <li>Train/validation/test splits ensuring signer-independent evaluation</li>
+          </ul>
         </div>
-        <div class="col-auto d-none d-md-block"><div class="sg-pipeline-arrow"><i class="bi bi-chevron-right"></i></div></div>
-        <div class="col-lg-2 col-md-4 col-6">
-          <div class="sg-pipeline-step animate-child">
-            <i class="bi bi-hand-index-fill fs-3 d-block mb-2" style="color:var(--text-muted)"></i>
-            <div class="fw-bold small">MediaPipe</div>
-            <div style="color:var(--text-muted); font-size: 0.75rem">26 Landmarks</div>
-          </div>
-        </div>
-        <div class="col-auto d-none d-md-block"><div class="sg-pipeline-arrow"><i class="bi bi-chevron-right"></i></div></div>
-        <div class="col-lg-2 col-md-4 col-6">
-          <div class="sg-pipeline-step animate-child">
-            <i class="bi bi-cpu-fill fs-3 d-block mb-2" style="color:var(--text-muted)"></i>
-            <div class="fw-bold small">Web Worker</div>
-            <div style="color:var(--text-muted); font-size: 0.75rem">Velocity + Buffer</div>
-          </div>
-        </div>
-        <div class="col-auto d-none d-md-block"><div class="sg-pipeline-arrow"><i class="bi bi-chevron-right"></i></div></div>
-        <div class="col-lg-2 col-md-4 col-6">
-          <div class="sg-pipeline-step animate-child">
-            <i class="bi bi-diagram-3-fill fs-3 d-block mb-2" style="color:var(--text-muted)"></i>
-            <div class="fw-bold small">ONNX Model</div>
-            <div style="color:var(--text-muted); font-size: 0.75rem">[1,64,156]</div>
-          </div>
-        </div>
-        <div class="col-auto d-none d-md-block"><div class="sg-pipeline-arrow"><i class="bi bi-chevron-right"></i></div></div>
-        <div class="col-lg-2 col-md-4 col-6">
-          <div class="sg-pipeline-step animate-child">
-            <i class="bi bi-chat-square-text-fill fs-3 d-block mb-2" style="color:var(--text-muted)"></i>
-            <div class="fw-bold small">CTC Decode</div>
-            <div style="color:var(--text-muted); font-size: 0.75rem">Gloss Tokens</div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row g-4 mb-5">
-        <div class="col-lg-6">
-          <div class="sg-card h-100 animate-child">
-            <h3 class="sg-card-title">26 Tracked Landmarks</h3>
-            <p class="sg-card-text mb-3">We extract a subset of landmarks from MediaPipe's full hand and pose models:</p>
-            <div class="sg-tech-table">
-              <table class="table table-sm mb-0">
-                <thead>
-                  <tr><th>Range</th><th>Count</th><th>Source</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>0 – 10</td><td>11</td><td>Left hand (wrist + MCP + tips)</td></tr>
-                  <tr><td>11 – 21</td><td>11</td><td>Right hand (wrist + MCP + tips)</td></tr>
-                  <tr><td>22 – 25</td><td>4</td><td>Pose (shoulders + elbows)</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div class="sg-about-expand" id="expand-impact">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Impact</h3>
+          <p>SignGloss addresses a critical communication barrier:</p>
+          <ul>
+            <li>Over 1.8 million deaf and hard-of-hearing individuals in India rely on ISL</li>
+            <li>Runs entirely in the browser — no installation, no app store, no server costs</li>
+            <li>Complete privacy: no video or data ever leaves the user's device</li>
+            <li>Works on any modern browser with a webcam — desktop or laptop</li>
+            <li>Zero-cost deployment makes it accessible to schools, NGOs, and individuals</li>
+          </ul>
         </div>
-        <div class="col-lg-6">
-          <div class="sg-card h-100 animate-child">
-            <h3 class="sg-card-title">Performance</h3>
-            <p class="sg-card-text mb-3">Designed for real-time performance on consumer hardware:</p>
-            <div class="sg-tech-table">
-              <table class="table table-sm mb-0">
-                <thead>
-                  <tr><th>Metric</th><th>Value</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>Camera FPS</td><td>30</td></tr>
-                  <tr><td>Sliding Window</td><td>64 frames (~2.1s)</td></tr>
-                  <tr><td>Hop Size</td><td>48 frames (~1.6s)</td></tr>
-                  <tr><td>Model Input</td><td>[1, 64, 156]</td></tr>
-                  <tr><td>Model Output</td><td>[1, 64, 601]</td></tr>
-                  <tr><td>Target Inference</td><td>&lt;200ms</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+
+        <div class="sg-about-expand" id="expand-future">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-heading); margin-bottom: 1rem">Future Scope</h3>
+          <ul>
+            <li>Sentence-level translation — moving beyond isolated gloss tokens to full sentence output</li>
+            <li>Support for additional sign languages (ASL, BSL, and others)</li>
+            <li>Larger and more diverse training datasets for improved accuracy</li>
+            <li>Mobile device support with optimized lightweight models</li>
+            <li>Offline capability via service workers and cached model files</li>
+            <li>Two-way communication: text-to-sign avatar generation</li>
+          </ul>
         </div>
       </div>
-
-      <div class="text-center mb-4">
-        <h2 class="sg-section-title animate-child">Tech Stack</h2>
-      </div>
-
-      <div class="row justify-content-center mb-5">
-        <div class="col-lg-8">
-          <div class="sg-tech-table animate-child">
-            <table class="table table-borderless mb-0">
-              <thead>
-                <tr><th>Technology</th><th>Purpose</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><strong>HTML + CSS + JS</strong></td><td>Core structure, styling, and logic — no frameworks</td></tr>
-                <tr><td><strong>Bootstrap 5</strong></td><td>Responsive layout and dark theme components</td></tr>
-                <tr><td><strong>MediaPipe Tasks Vision</strong></td><td>Hand and pose landmark detection from webcam</td></tr>
-                <tr><td><strong>ONNX Runtime Web</strong></td><td>In-browser neural network inference</td></tr>
-                <tr><td><strong>Web Workers</strong></td><td>Off-main-thread inference pipeline</td></tr>
-                <tr><td><strong>Motion One</strong></td><td>Spring-physics animations and transitions</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <div id="footer-placeholder"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
   <script src="js/common.js"></script>
   <script src="js/transitions.js"></script>
   <script src="js/animations.js"></script>
+  <script>
+  (function() {
+    var cards = document.querySelectorAll('.sg-about-card');
+    var expandPanels = {
+      pipeline: document.getElementById('expand-pipeline'),
+      architecture: document.getElementById('expand-architecture'),
+      datasets: document.getElementById('expand-datasets'),
+      impact: document.getElementById('expand-impact'),
+      future: document.getElementById('expand-future')
+    };
+    var activeCard = null;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        var key = card.getAttribute('data-card');
+        var panel = expandPanels[key];
+        if (!panel) return;
+
+        if (activeCard === key) {
+          panel.classList.remove('active');
+          activeCard = null;
+          return;
+        }
+
+        Object.keys(expandPanels).forEach(function(k) {
+          expandPanels[k].classList.remove('active');
+        });
+
+        panel.classList.add('active');
+        activeCard = key;
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

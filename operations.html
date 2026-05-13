@@ -7,122 +7,126 @@
   <meta name="description" content="Live ISL to gloss translation. Allow camera access and start signing to see real-time gloss output.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-bs-theme="dark">
+
   <div id="navbar-placeholder"></div>
 
-  <section class="sg-section" style="padding-top: 2rem">
-    <div class="container-fluid px-4">
+  <main>
+    <div class="sg-ops-fullscreen" id="video-container">
 
-      <div id="metrics-bar" class="d-flex align-items-center gap-4 mb-3 p-2 rounded" style="background: var(--surface-card); border: 1px solid var(--border)">
-        <div class="d-flex align-items-center gap-2">
-          <span id="status-dot" class="status-dot status-loading"></span>
-          <span id="status-label" class="small">Initializing...</span>
+      <video id="camera-feed" autoplay playsinline muted style="display:none"></video>
+      <canvas id="landmark-canvas"></canvas>
+      <div class="sg-ops-gradient"></div>
+
+      <div id="camera-placeholder" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:2">
+      </div>
+
+      <div class="sg-translate-trigger glass-panel" id="start-btn" style="z-index:5">
+        <i class="bi bi-broadcast" style="font-size:64px;color:var(--text-primary);display:block;margin-bottom:16px"></i>
+        <div style="font-family:var(--font-heading);font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;text-transform:uppercase;letter-spacing:4px;color:var(--text-primary)">TRANSLATE</div>
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-primary);opacity:0.6;margin-top:12px">Initialize Computational<br>Inference Engine</div>
+      </div>
+
+      <div style="position:absolute;top:112px;left:16px;z-index:5;display:flex;flex-direction:column;gap:4px">
+        <div class="sg-metric-badge">
+          <span class="metric-label">FPS</span>
+          <span class="metric-value" id="fps-display">0.0</span>
         </div>
-        <div class="d-flex align-items-center gap-2 flex-grow-1">
-          <span class="small" style="color: var(--text-muted)">Buffer:</span>
-          <div class="progress flex-grow-1" style="height:14px;max-width:200px;background:var(--surface-deep);border-radius:7px">
-            <div id="buffer-progress" class="progress-bar" role="progressbar" style="width:0%;background:var(--accent-primary);border-radius:7px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-          </div>
+        <div class="sg-metric-badge">
+          <span class="metric-label">LATEN.</span>
+          <span class="metric-value" id="inference-time">0ms</span>
         </div>
-        <div>
-          <span class="small" style="color: var(--text-muted)">Inference:</span>
-          <span id="inference-time" class="small">—</span>
-        </div>
-        <div>
-          <span class="small" style="color: var(--text-muted)">Confidence:</span>
-          <span id="confidence-display" class="small">—</span>
+        <div class="sg-metric-badge">
+          <span class="metric-label">GLOSS</span>
+          <span class="metric-value" id="gloss-count">0000</span>
         </div>
       </div>
 
-      <div class="row g-3">
-        <div class="col-lg-8" id="video-panel">
-          <div class="sg-video-container" id="video-container">
-            <video id="camera-feed" autoplay playsinline muted style="display:none"></video>
-            <canvas id="landmark-canvas"></canvas>
-            <div class="sg-fps-badge" id="fps-display" style="display:none">0 FPS</div>
-
-            <div class="sg-loading-overlay" id="mediapipe-loading" style="display:none">
-              <div class="sg-spinner mb-3"></div>
-              <span style="color: var(--text-muted)">Loading AI model...</span>
-            </div>
-
-            <div class="sg-camera-placeholder" id="camera-placeholder">
-              <i class="bi bi-camera-video"></i>
-              <p class="mb-3">Camera feed will appear here</p>
-              <button class="btn sg-btn-primary" id="start-btn">
-                <i class="bi bi-play-fill me-1"></i> Start Camera
-              </button>
-            </div>
-
-            <div class="sg-camera-error" id="camera-error" style="display:none">
-              <i class="bi bi-exclamation-triangle-fill fs-2 d-block mb-2"></i>
-              <p id="camera-error-message">Camera access denied</p>
-              <button class="btn sg-btn-outline btn-sm mt-2" id="retry-camera-btn" style="border-color: var(--danger); color: var(--danger)">
-                <i class="bi bi-arrow-clockwise me-1"></i> Retry
-              </button>
-            </div>
-          </div>
-
-          <div class="sg-video-controls" id="video-controls" style="display:none">
-            <button class="btn btn-sm" id="stop-btn" style="background: var(--danger); color: #fff; border-radius: var(--radius-sm)">
-              <i class="bi bi-stop-fill me-1"></i> Stop
-            </button>
-          </div>
+      <div class="sg-inference-log d-none d-lg-flex">
+        <div class="sg-inference-log-header">INFERENCE LOG</div>
+        <div class="sg-inference-log-body glass-panel" id="gloss-history">
         </div>
+        <div class="sg-live-indicator glass-panel">
+          <div class="sg-live-dot" id="status-dot"></div>
+          <span id="status-label">LIVE SCANNING</span>
+        </div>
+      </div>
 
-        <div class="col-lg-4" id="results-panel">
-          <div class="sg-card h-100" style="padding: 0; overflow: hidden">
-            <div class="px-3 py-3" style="border-bottom: 1px solid var(--border)">
-              <h5 class="mb-0 sg-card-title" style="font-size: 1rem">
-                <i class="bi bi-translate me-2" style="color: var(--accent-primary)"></i>Gloss Output
-              </h5>
+      <div class="sg-gloss-output-card" id="video-panel">
+        <div class="sg-certainty-bar" id="buffer-progress" style="width:0%"></div>
+        <div style="position:relative;padding-top:4px">
+          <div class="sg-gloss-header">
+            <div class="sg-gloss-header-left">
+              <i class="bi bi-gear-fill" style="font-size:14px;color:var(--text-primary)"></i>
+              <span>Prediction: <span id="confidence-display">0.0%</span></span>
             </div>
-            <div class="p-3">
-              <div class="mb-3">
-                <label class="form-label small" style="color: var(--text-muted)">Current Detection</label>
-                <div id="current-gloss" class="p-3 rounded" style="background: var(--surface-deep); min-height: 60px; border: 1px solid var(--border); font-size: 1.1rem; font-family: var(--font-heading); color: var(--text-heading)">
-                  <span style="color: var(--text-muted); font-family: var(--font-body); font-size: 0.9rem">Waiting for input...</span>
-                </div>
-              </div>
-
-              <div id="error-display" class="alert alert-danger py-2 d-none" role="alert"></div>
-
-              <div id="model-loading-spinner" class="text-center py-3">
-                <div class="sg-spinner" style="width:24px;height:24px;border-width:2px;display:inline-block;vertical-align:middle"></div>
-                <small style="color: var(--text-muted)" class="ms-2">Loading ONNX model...</small>
-              </div>
-
-              <div id="model-error-state" class="text-center py-3 d-none">
-                <i class="bi bi-exclamation-triangle fs-4 d-block mb-2" style="color: var(--danger)"></i>
-                <p class="small mb-2" style="color: var(--danger)">Model failed to load</p>
-                <button id="retry-model-btn" class="btn sg-btn-outline btn-sm" style="border-color: var(--danger); color: var(--danger)">Retry</button>
-              </div>
-
-              <hr style="border-color: var(--border)">
-
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label small mb-0" style="color: var(--text-muted)">History</label>
-                <button id="test-mode-btn" class="btn sg-btn-outline btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.7rem; border-color: var(--warning); color: var(--warning)">Start Test Mode</button>
-              </div>
-              <ul id="gloss-history" class="list-group list-group-flush" style="max-height:300px;overflow-y:auto;">
-              </ul>
+            <div class="sg-gloss-header-right" id="copy-gloss-btn" aria-label="Copy gloss to clipboard">
+              <i class="bi bi-clipboard" style="font-size:14px"></i>
             </div>
+          </div>
+          <div class="sg-gloss-main-text" id="current-gloss">—</div>
+          <div class="sg-gloss-subtitle">Semantic Mapping: Awaiting Input</div>
+          <div class="sg-confidence-grid">
+            <div class="seg"></div>
+            <div class="seg"></div>
+            <div class="seg"></div>
           </div>
         </div>
       </div>
+
+      <button class="sg-term-ops-btn" id="stop-btn" style="display:none" aria-label="Terminate operations">
+        <i class="bi bi-stop-circle"></i>
+        TERM OPS
+      </button>
+
+      <div id="mediapipe-loading" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,0.92);z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center">
+        <div style="width:36px;height:36px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--text-primary);border-radius:50%;animation:sg-spin 0.8s linear infinite;margin-bottom:16px"></div>
+        <span style="color:var(--text-secondary);font-family:var(--font-body);font-size:0.9rem">Loading AI model...</span>
+      </div>
+
+      <div id="camera-error" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;padding:2rem">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size:2rem;color:var(--color-danger);display:block;margin-bottom:12px"></i>
+        <p id="camera-error-message" style="color:var(--color-danger);font-family:var(--font-body)">Camera access denied</p>
+        <button class="btn sg-btn-outline btn-sm" id="retry-camera-btn" style="border-color:var(--color-danger);color:var(--color-danger)">
+          <i class="bi bi-arrow-clockwise me-1"></i> Retry
+        </button>
+      </div>
+
+      <div id="model-loading-spinner" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center">
+        <div style="width:24px;height:24px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--text-primary);border-radius:50%;animation:sg-spin 0.8s linear infinite;display:inline-block;vertical-align:middle"></div>
+        <small style="color:var(--text-secondary);margin-left:8px">Loading ONNX model...</small>
+      </div>
+
+      <div id="model-error-state" class="d-none" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center">
+        <i class="bi bi-exclamation-triangle" style="font-size:1.5rem;color:var(--color-danger);display:block;margin-bottom:8px"></i>
+        <p style="font-size:0.85rem;color:var(--color-danger);margin-bottom:8px">Model failed to load</p>
+        <button id="retry-model-btn" class="btn sg-btn-outline btn-sm" style="border-color:var(--color-danger);color:var(--color-danger)">Retry</button>
+      </div>
+
+      <div id="error-display" class="d-none" style="position:absolute;bottom:120px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);padding:8px 16px;border-radius:var(--radius-button);color:var(--color-danger);font-size:0.85rem;max-width:360px;text-align:center"></div>
+
+      <div id="metrics-bar" style="display:none"></div>
+      <div id="video-controls" style="display:none"></div>
+      <div id="results-panel" style="display:none"></div>
+      <button id="test-mode-btn" style="display:none">Test Mode</button>
 
     </div>
-  </section>
+  </main>
 
-  <div id="footer-placeholder"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
   <script src="js/common.js"></script>
   <script src="js/transitions.js"></script>
   <script src="js/animations.js"></script>
   <script type="module" src="js/operations-inference.js"></script>
   <script type="module" src="js/operations-capture.js"></script>
+
+  <style>
+  @keyframes sg-spin {
+    to { transform: rotate(360deg); }
+  }
+  </style>
 </body>
 </html>

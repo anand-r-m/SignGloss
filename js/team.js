@@ -1,12 +1,47 @@
-document.querySelectorAll('.sg-team-card').forEach(function(card) {
+var cards = document.querySelectorAll('.sg-team-card');
+var overlay = document.getElementById('team-card-overlay');
+var overlayContent = document.getElementById('team-overlay-content');
+var overlayClose = document.getElementById('team-overlay-close');
+
+cards.forEach(function(card) {
   card.addEventListener('click', function() {
-    var isExpanded = card.classList.contains('sg-card--expanded');
-    document.querySelectorAll('.sg-team-card').forEach(function(c) {
-      c.classList.remove('sg-card--expanded');
-    });
-    if (!isExpanded) {
-      card.classList.add('sg-card--expanded');
+    var expandContent = card.querySelector('.sg-card-expand-content');
+    if (!expandContent || !overlay) return;
+
+    overlayContent.innerHTML = '';
+    var header = document.createElement('div');
+    header.style.textAlign = 'center';
+    header.style.marginBottom = '1.5rem';
+
+    var photo = card.querySelector('.sg-team-photo');
+    if (photo) {
+      var photoClone = photo.cloneNode(true);
+      photoClone.style.width = '100px';
+      photoClone.style.height = '100px';
+      header.appendChild(photoClone);
     }
+
+    var name = card.querySelector('.sg-team-name');
+    if (name) {
+      var nameClone = name.cloneNode(true);
+      header.appendChild(nameClone);
+    }
+
+    var role = card.querySelector('.sg-team-role');
+    if (role) {
+      var roleClone = role.cloneNode(true);
+      header.appendChild(roleClone);
+    }
+
+    overlayContent.appendChild(header);
+
+    var contentClone = expandContent.cloneNode(true);
+    contentClone.style.maxHeight = 'none';
+    contentClone.style.overflow = 'visible';
+    overlayContent.appendChild(contentClone);
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
   });
 
   card.addEventListener('keydown', function(e) {
@@ -16,6 +51,22 @@ document.querySelectorAll('.sg-team-card').forEach(function(card) {
     }
   });
 });
+
+if (overlayClose) {
+  overlayClose.addEventListener('click', function() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  });
+}
+
+if (overlay) {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+}
 
 var starContainer = document.getElementById('star-rating');
 var ratingInput = document.getElementById('rating-value');

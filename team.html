@@ -23,6 +23,12 @@
       overflow: hidden;
     }
 
+    .sg-team-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .sg-team-photo i {
       font-size: 3rem;
       color: #A0A0A0;
@@ -32,6 +38,7 @@
       text-align: center;
       padding: 2.5rem 2rem;
       transition: transform 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
     }
 
     .sg-team-card:hover {
@@ -40,14 +47,7 @@
     }
 
     .sg-team-card .sg-card-expand-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease;
-      text-align: left;
-    }
-
-    .sg-team-card.sg-card--expanded .sg-card-expand-content {
-      max-height: 600px;
+      display: none;
     }
 
     .sg-team-name {
@@ -110,6 +110,59 @@
 
     .sg-team-links a:hover {
       color: #F5F5F5;
+    }
+
+    .sg-team-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9000;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 2rem;
+      overflow-y: auto;
+    }
+
+    .sg-team-overlay.active {
+      display: flex;
+    }
+
+    .sg-team-overlay-card {
+      max-width: 600px;
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 2.5rem;
+      text-align: left;
+      animation: teamExpand 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sg-team-overlay-close {
+      position: absolute;
+      top: 80px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: #A0A0A0;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 9001;
+      transition: color 0.2s;
+    }
+
+    .sg-team-overlay-close:hover {
+      color: #F5F5F5;
+    }
+
+    @keyframes teamExpand {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .sg-contact-input {
@@ -192,6 +245,11 @@
 <body data-bs-theme="dark">
   <div id="navbar-placeholder"></div>
 
+  <div class="sg-team-overlay" id="team-card-overlay">
+    <button class="sg-team-overlay-close" id="team-overlay-close" aria-label="Close">&times;</button>
+    <div class="sg-team-overlay-card" id="team-overlay-content"></div>
+  </div>
+
   <main>
     <section class="sg-section">
       <div class="container">
@@ -204,7 +262,7 @@
           <div class="col-md-6 col-lg-5">
             <div class="sg-card sg-team-card h-100 animate-child" id="card-vidyasree" role="button" tabindex="0" aria-label="Expand Vidyasree Jayaprasad profile">
               <div class="sg-team-photo">
-                <i class="bi bi-person-fill"></i>
+                <img src="assets/images/vidyasree.jpeg" alt="Vidyasree Jayaprasad" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
               </div>
               <h3 class="sg-team-name">Vidyasree Jayaprasad</h3>
               <p class="sg-team-role">Dev A — Capture & Frontend</p>
@@ -238,7 +296,7 @@
           <div class="col-md-6 col-lg-5">
             <div class="sg-card sg-team-card h-100 animate-child" id="card-anand" role="button" tabindex="0" aria-label="Expand Anand R M profile">
               <div class="sg-team-photo">
-                <i class="bi bi-person-fill"></i>
+                <img src="assets/images/anand.jpeg" alt="Anand R M" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
               </div>
               <h3 class="sg-team-name">Anand R M</h3>
               <p class="sg-team-role">Dev B — Inference Pipeline</p>

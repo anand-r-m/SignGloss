@@ -1,93 +1,111 @@
-const STROKE_COLOR = '#E8734A';
-const WIPE_DURATION = 0.55;
-const WIPE_EASE = [0.76, 0, 0.24, 1];
+var isTransitioning = false;
 
-let overlay = null;
-let strokePath = null;
-let pathLength = 0;
-let isTransitioning = false;
+function animateElements(elements, fromX, toX, fromOpacity, toOpacity, duration, easing, staggerMs) {
+  return new Promise(function(resolve) {
+    if (elements.length === 0) {
+      resolve();
+      return;
+    }
 
-function ensureOverlay() {
-  if (overlay) return;
-  overlay = document.createElement('div');
-  overlay.id = 'transition-overlay';
-  overlay.innerHTML = `
-    <svg viewBox="0 0 1600 100" preserveAspectRatio="none"
-         style="width:100%;height:100%;position:absolute;top:0;left:0">
-      <path d="M-100,50 Q200,20 500,55 Q800,85 1100,45 Q1400,15 1700,50"
-            stroke="${STROKE_COLOR}"
-            stroke-width="120"
-            stroke-linecap="round"
-            fill="none"
-            id="wipe-stroke"/>
-    </svg>`;
-  document.body.appendChild(overlay);
-  strokePath = document.getElementById('wipe-stroke');
-  pathLength = strokePath.getTotalLength();
-  strokePath.style.strokeDasharray = pathLength;
-  strokePath.style.strokeDashoffset = pathLength;
-}
+    var completed = 0;
+    var total = elements.length;
 
-function playExitStroke() {
-  return new Promise(resolve => {
-    ensureOverlay();
-    overlay.classList.add('active');
-    strokePath.style.strokeDashoffset = pathLength;
+    var sorted = Array.from(elements).sort(function(a, b) {
+      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+    });
 
-    const { animate } = Motion;
-    animate(strokePath, {
-      strokeDashoffset: [pathLength, 0]
-    }, {
-      duration: WIPE_DURATION,
-      easing: WIPE_EASE
-    }).finished.then(resolve);
+    sorted.forEach(function(el, i) {
+      var delay = i * staggerMs;
+
+      setTimeout(function() {
+        el.style.transition = 'transform ' + duration + 'ms ' + easing + ', opacity ' + duration + 'ms ' + easing;
+        el.style.transform = 'translateX(' + fromX + 'px)';
+        el.style.opacity = fromOpacity;
+
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            el.style.transform = 'translateX(' + toX + 'px)';
+            el.style.opacity = toOpacity;
+          });
+        });
+
+        setTimeout(function() {
+          completed++;
+          if (completed === total) {
+            resolve();
+          }
+        }, duration + 20);
+      }, delay);
+    });
   });
 }
 
-function playEnterStroke() {
-  ensureOverlay();
-  overlay.classList.add('active');
-  strokePath.style.strokeDashoffset = 0;
+function playExitTransition() {
+  var elements = document.querySelectorAll('.animate-child');
+  elements.forEach(function(el) {
+    el.style.transform = 'translateX(0)';
+    el.style.opacity = '1';
+  });
+  return animateElements(
+    elements,
+    0, -100,
+    1, 0,
+    400,
+    'cubic-bezier(0.4, 0, 0.2, 1)',
+    60
+  );
+}
 
-  const { animate } = Motion;
-  animate(strokePath, {
-    strokeDashoffset: [0, -pathLength]
-  }, {
-    duration: WIPE_DURATION,
-    easing: WIPE_EASE
-  }).finished.then(() => {
-    overlay.classList.remove('active');
-    strokePath.style.strokeDashoffset = pathLength;
+function playEnterTransition() {
+  var elements = document.querySelectorAll('.animate-child');
+  elements.forEach(function(el) {
+    el.style.transform = 'translateX(100px)';
+    el.style.opacity = '0';
+  });
+
+  requestAnimationFrame(function() {
+    animateElements(
+      elements,
+      100, 0,
+      0, 1,
+      450,
+      'cubic-bezier(0.16, 1, 0.3, 1)',
+      60
+    ).then(function() {
+      elements.forEach(function(el) {
+        el.style.transition = '';
+        el.style.transform = '';
+      });
+    });
   });
 }
 
 function interceptLinks() {
-  document.addEventListener('click', async (e) => {
-    const link = e.target.closest('a[href]');
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href]');
     if (!link) return;
 
-    const href = link.getAttribute('href');
+    var href = link.getAttribute('href');
     if (!href || href === '#' || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('javascript')) return;
 
-    const currentPage = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1) || 'index.html';
+    var currentPage = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1) || 'index.html';
     if (href === currentPage) return;
-
     if (isTransitioning) return;
-    isTransitioning = true;
 
+    isTransitioning = true;
     e.preventDefault();
     sessionStorage.setItem('sg-transition-active', '1');
-    await playExitStroke();
-    window.location.href = href;
+
+    playExitTransition().then(function() {
+      window.location.href = href;
+    });
   });
 }
 
 function initTransitions() {
-  ensureOverlay();
-
   if (sessionStorage.getItem('sg-transition-active')) {
     sessionStorage.removeItem('sg-transition-active');
-    playEnterStroke();
+    playEnterTransition();
   }
 
   interceptLinks();

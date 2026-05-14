@@ -1,104 +1,118 @@
-# SignGloss — Real-Time ISL to Gloss Translation
+# SignGloss
 
-A client-side web application that translates Indian Sign Language (ISL) into gloss tokens in real-time using webcam input. Everything runs in the browser — no server, no backend, no data leaves your machine.
+Real-time Indian Sign Language to gloss translation that runs entirely in the browser.
 
-## Tech Stack
+---
 
-| Layer | Technology |
-|-------|-----------|
-| UI Framework | Bootstrap 5 (dark theme) |
-| Camera | WebRTC `getUserMedia` |
-| Landmark Detection | MediaPipe Tasks Vision |
-| Inference | ONNX Runtime Web (Web Worker) |
-| Decoding | CTC Greedy Decode |
-| Language | Vanilla JavaScript (ES Modules) |
-| Styling | CSS + Bootstrap 5.3 |
+## Overview
 
-## Pipeline
+SignGloss is a web app that translates Indian Sign Language (ISL) into text (gloss tokens) using your webcam. Everything runs client-side — no backend, no data leaves your device.
 
-```
-Camera (30fps) → MediaPipe → 26 landmarks × 3 coords = 78 features
-       ↓
-Web Worker: compute velocity → 156 features per frame
-       ↓
-Sliding window buffer (64 frames)
-       ↓
-ONNX inference → [1, 64, 601] output
-       ↓
-CTC greedy decode → gloss tokens → UI
-```
+It captures video, extracts hand/body landmarks using MediaPipe, runs a transformer model via ONNX Runtime, and decodes the output with CTC decoding. All of this happens in the browser using Web Workers.
 
-## Pages
-
-| Page | File | Description |
-|------|------|-------------|
-| Home | `index.html` | Landing page with hero and feature cards |
-| About | `about.html` | Project overview, pipeline diagram, tech stack |
-| Demo | `demo.html` | Pre-recorded screen recording of the system |
-| Operations | `operations.html` | Live camera → inference → gloss output |
-| Learn | `learn.html` | ISL video tutorials and learning resources |
-| Team | `team.html` | Team members and contact form |
-
-## Setup
-
-No build step required. Serve the files with any static server:
-
-```bash
-# Option 1: VS Code Live Server extension
-# Right-click index.html → Open with Live Server
-
-# Option 2: Python
-python3 -m http.server 8000
-
-# Option 3: Node
-npx serve .
-```
-
-Then open `http://localhost:8000` in Chrome (recommended).
-
-> **Note:** Camera access requires HTTPS or localhost. The Operations page needs camera permission to function.
-
-## Project Structure
-
-```
-CSLR-website/
-├── index.html              Landing page
-├── about.html              Project info
-├── demo.html               Demo video
-├── operations.html         Live inference
-├── learn.html              ISL tutorials
-├── team.html               Team + contact
-├── css/
-│   └── style.css           Custom styles
-├── js/
-│   ├── contract.js         Shared constants + Pipeline
-│   ├── common.js           Navbar/footer injection
-│   ├── warp-transition.js  Page transition animation
-│   ├── capture.js          WebRTC camera
-│   ├── landmarks.js        MediaPipe extraction
-│   ├── operations-capture.js   Camera wiring
-│   ├── inference-worker.js Web Worker (ONNX + CTC)
-│   ├── bridge.js           Worker wrapper
-│   ├── decoder.js          CTC greedy decode
-│   ├── operations-inference.js Inference UI wiring
-│   ├── demo.js             Demo page logic
-│   └── team.js             Contact form validation
-├── models/
-│   └── signgloss_stub.onnx ONNX model
-├── assets/
-│   ├── images/
-│   └── videos/
-└── scripts/
-    └── generate_stub_model.py
-```
+---
 
 ## Team
 
 | Name | Role |
-|------|------|
-| Anand R M | Dev A — Capture & Frontend |
-| Team Member | Dev B — Inference Pipeline |
+|---|---|
+| Vidyasree Jayaprasad | Capture & Frontend — camera pipeline, MediaPipe integration, UI/UX, page layouts |
+| Anand Rodriguez Menon | Inference Pipeline — ONNX model, Web Worker, CTC decoding, model architecture |
 
-## License
+---
 
-This project is for educational purposes.
+## Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+- Bootstrap 5
+- MediaPipe (landmark detection)
+- ONNX Runtime Web (model inference)
+- Web Workers
+- Google Fonts (Space Grotesk, Inter, JetBrains Mono)
+
+---
+
+## Features
+
+- Real-time ISL to gloss translation via webcam
+- MediaPipe hand/body landmark extraction with visual overlay
+- ONNX model inference running in a dedicated Web Worker
+- CTC decoding for gloss output
+- Intro animation on the landing page
+- Page transition effects
+- Contact form with client-side validation and star rating
+- Learn page with embedded ISL tutorial videos
+- Responsive design across all pages
+- Dark theme UI with glassmorphism elements
+
+---
+
+## Project Structure
+
+```
+├── index.html              # Landing page
+├── about.html              # How it works
+├── demo.html               # Pre-recorded demo video
+├── operations.html         # Live translation (camera + inference)
+├── learn.html              # Learn ISL signs
+├── team.html               # Team + contact form
+├── css/
+│   └── style.css           # All styles
+├── js/
+│   ├── common.js           # Shared navbar/footer
+│   ├── animations.js       # Scroll animations, counters
+│   ├── intro-animation.js  # Landing page intro effect
+│   ├── transitions.js      # Page transitions
+│   ├── operations-capture.js   # Camera + MediaPipe capture
+│   ├── operations-inference.js # Inference UI logic
+│   ├── inference-worker.js     # Web Worker for ONNX inference
+│   ├── landmarks.js        # Landmark extraction
+│   ├── decoder.js          # CTC decoding
+│   ├── bridge.js           # Capture-inference data bridge
+│   └── contract.js         # Data contract definitions
+├── models/
+│   └── signgloss_stub.onnx # ONNX model file
+├── assets/
+│   ├── background.jpg
+│   ├── images/
+│   ├── videos/
+│   └── screenshots/
+└── scripts/
+    └── generate_stub_model.py
+```
+
+---
+
+## Screenshots
+
+### Homepage
+![Homepage](assets/screenshots/homepage.png)
+
+### About
+![About](assets/screenshots/about.png)
+
+### Operations (Live Translation)
+![Operations](assets/screenshots/operations.png)
+
+### Learn
+![Learn](assets/screenshots/learn.png)
+
+---
+
+## Running the Project
+
+1. Clone or download the repo
+2. Serve it with any local server (Live Server, `python -m http.server`, etc.)
+3. Open `index.html` in a browser
+4. Go to the Operations page and allow camera access to start translating
+
+---
+
+## Notes
+
+- Needs a local server — opening `index.html` directly as a file won't work because of CORS and module imports
+- Requires a webcam for the live translation feature
+- Works best on Chrome or Edge (WebRTC + WASM support)
+- The `models/` folder must contain the ONNX model file

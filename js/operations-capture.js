@@ -62,6 +62,11 @@ function drawLandmarkOverlay(handResults, poseResults) {
   const w = canvasEl.width;
   const h = canvasEl.height;
 
+  // Forward hand results to the hand-tracking overlay canvas
+  if (window.__handTrackingOverlay) {
+    window.__handTrackingOverlay(handResults, w, h);
+  }
+
   if (handResults && handResults.landmarks) {
     for (let hi = 0; hi < handResults.landmarks.length; hi++) {
       const hand = handResults.landmarks[hi];
@@ -203,6 +208,7 @@ function handleStop() {
 
   if (videoEl) videoEl.style.display = 'none';
   if (ctx && canvasEl) ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  if (window.__handTrackingOverlayClear) window.__handTrackingOverlayClear();
 
   hideElement('video-controls');
   hideElement('fps-display');

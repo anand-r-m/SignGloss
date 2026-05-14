@@ -30,16 +30,9 @@
     .sg-carousel-track {
       display: flex;
       gap: 1.5rem;
-      overflow-x: auto;
-      scroll-behavior: smooth;
       cursor: grab;
       user-select: none;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .sg-carousel-track::-webkit-scrollbar {
-      display: none;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     .sg-carousel-track:active {
@@ -255,7 +248,8 @@
 
       function scrollToIndex(index) {
         var itemWidth = getItemWidth();
-        track.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+        track.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+        track.style.transform = 'translateX(' + (-index * itemWidth) + 'px)';
       }
 
       prevBtn.addEventListener('click', function () {
@@ -270,29 +264,49 @@
 
       var isDragging = false;
       var startX = 0;
-      var scrollLeft = 0;
+      var currentTranslate = 0;
+      var prevTranslate = 0;
 
       track.addEventListener('mousedown', function (e) {
         isDragging = true;
-        startX = e.pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
+        startX = e.pageX;
+        var style = window.getComputedStyle(track);
+        var matrix = new WebKitCSSMatrix(style.transform);
+        prevTranslate = matrix.m41;
+        track.style.transition = 'none';
       });
 
       track.addEventListener('mouseleave', function () {
-        isDragging = false;
+        if (isDragging) {
+          isDragging = false;
+          snapToClosest();
+        }
       });
 
       track.addEventListener('mouseup', function () {
-        isDragging = false;
+        if (isDragging) {
+          isDragging = false;
+          snapToClosest();
+        }
       });
 
       track.addEventListener('mousemove', function (e) {
         if (!isDragging) return;
         e.preventDefault();
-        var x = e.pageX - track.offsetLeft;
+        var x = e.pageX;
         var walk = (x - startX) * 1.5;
-        track.scrollLeft = scrollLeft - walk;
+        currentTranslate = prevTranslate + walk;
+        track.style.transform = 'translateX(' + currentTranslate + 'px)';
       });
+
+      function snapToClosest() {
+        var itemWidth = getItemWidth();
+        var rawIndex = Math.round(-currentTranslate / itemWidth);
+        if (rawIndex < 0) rawIndex = 0;
+        if (rawIndex > totalCards - 1) rawIndex = totalCards - 1;
+        currentIndex = rawIndex;
+        scrollToIndex(currentIndex);
+      }
     })();
   </script>
 

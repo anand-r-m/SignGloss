@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SignGloss — Team</title>
-  <meta name="description" content="Meet the team behind SignGloss — the developers building real-time ISL to gloss translation.">
+  <meta name="description"
+    content="Meet the team behind SignGloss — the developers building real-time ISL to gloss translation.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .sg-team-photo {
@@ -19,7 +23,7 @@
       align-items: center;
       justify-content: center;
       margin: 0 auto 1rem;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
       overflow: hidden;
     }
 
@@ -43,7 +47,7 @@
 
     .sg-team-card:hover {
       transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.15);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
     .sg-team-card .sg-card-expand-content {
@@ -75,7 +79,7 @@
 
     .sg-skill-badge {
       display: inline-block;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       border-radius: 20px;
       padding: 4px 12px;
       font-family: 'Inter', sans-serif;
@@ -119,7 +123,7 @@
       width: 100%;
       height: 100%;
       z-index: 9000;
-      background: rgba(10,10,10,0.92);
+      background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: none;
@@ -136,8 +140,8 @@
     .sg-team-overlay-card {
       max-width: 600px;
       width: 100%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 2.5rem;
       text-align: left;
       animation: teamExpand 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -161,13 +165,20 @@
     }
 
     @keyframes teamExpand {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .sg-contact-input {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 0;
       color: #F5F5F5;
       padding: 14px 16px;
@@ -177,10 +188,10 @@
     }
 
     .sg-contact-input:focus {
-      border-color: rgba(255,255,255,0.2);
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
       outline: none;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
       color: #F5F5F5;
     }
 
@@ -242,6 +253,7 @@
     }
   </style>
 </head>
+
 <body data-bs-theme="dark">
 
   <div class="sg-world-bg"></div>
@@ -263,16 +275,20 @@
 
         <div class="row g-4 justify-content-center mb-5" id="team-cards">
           <div class="col-md-6 col-lg-5">
-            <div class="sg-card sg-team-card h-100 animate-child" id="card-vidyasree" role="button" tabindex="0" aria-label="Expand Vidyasree Jayaprasad profile">
+            <div class="sg-card sg-team-card h-100 animate-child" id="card-vidyasree" role="button" tabindex="0"
+              aria-label="Expand Vidyasree Jayaprasad profile">
               <div class="sg-team-photo">
-                <img src="assets/images/vidyasree.jpeg" alt="Vidyasree Jayaprasad" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
+                <img src="assets/images/vidyasree.jpeg" alt="Vidyasree Jayaprasad"
+                  onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
               </div>
               <h3 class="sg-team-name">Vidyasree Jayaprasad</h3>
               <p class="sg-team-role">Dev A — Capture & Frontend</p>
 
               <div class="sg-card-expand-content">
                 <hr style="border-color: rgba(255,255,255,0.06); margin: 1rem 0">
-                <p class="sg-team-bio">Handles the entire frontend architecture including camera capture via WebRTC, real-time landmark extraction using Google's MediaPipe, and the complete UI/UX design system. Responsible for the visual identity of SignGloss.</p>
+                <p class="sg-team-bio">Handles the entire frontend architecture including camera capture via WebRTC,
+                  real-time landmark extraction using Google's MediaPipe, and the complete UI/UX design system.
+                  Responsible for the visual identity of SignGloss.</p>
 
                 <div class="sg-team-detail-label">Skills</div>
                 <div class="mb-2">
@@ -289,24 +305,30 @@
 
                 <div class="sg-team-detail-label">Links</div>
                 <div class="sg-team-links">
-                  <a href="https://github.com/VidyasreeJayaprasad" target="_blank" aria-label="Vidyasree GitHub"><i class="bi bi-github"></i></a>
-                  <a href="https://www.linkedin.com/in/vidyasree-jayaprasad-4b2a773a5/" target="_blank" aria-label="Vidyasree LinkedIn"><i class="bi bi-linkedin"></i></a>
+                  <a href="https://github.com/VidyasreeJayaprasad" target="_blank" aria-label="Vidyasree GitHub"><i
+                      class="bi bi-github"></i></a>
+                  <a href="https://www.linkedin.com/in/vidyasree-jayaprasad-4b2a773a5/" target="_blank"
+                    aria-label="Vidyasree LinkedIn"><i class="bi bi-linkedin"></i></a>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="col-md-6 col-lg-5">
-            <div class="sg-card sg-team-card h-100 animate-child" id="card-anand" role="button" tabindex="0" aria-label="Expand Anand R M profile">
+            <div class="sg-card sg-team-card h-100 animate-child" id="card-anand" role="button" tabindex="0"
+              aria-label="Expand Anand R M profile">
               <div class="sg-team-photo">
-                <img src="assets/images/anand.jpeg" alt="Anand R M" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
+                <img src="assets/images/anand.jpeg" alt="Anand R M"
+                  onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-fill\'></i>';">
               </div>
               <h3 class="sg-team-name">Anand R M</h3>
               <p class="sg-team-role">Dev B — Inference Pipeline</p>
 
               <div class="sg-card-expand-content">
                 <hr style="border-color: rgba(255,255,255,0.06); margin: 1rem 0">
-                <p class="sg-team-bio">Builds the complete inference backend that runs in-browser — from the ONNX neural network runtime to CTC decoding, all executing inside a Web Worker for zero-lag performance. Designed the model architecture and training pipeline.</p>
+                <p class="sg-team-bio">Builds the complete inference backend that runs in-browser — from the ONNX neural
+                  network runtime to CTC decoding, all executing inside a Web Worker for zero-lag performance. Designed
+                  the model architecture and training pipeline.</p>
 
                 <div class="sg-team-detail-label">Skills</div>
                 <div class="mb-2">
@@ -323,8 +345,10 @@
 
                 <div class="sg-team-detail-label">Links</div>
                 <div class="sg-team-links">
-                  <a href="https://github.com/anand-r-m" target="_blank" aria-label="Anand GitHub"><i class="bi bi-github"></i></a>
-                  <a href="https://www.linkedin.com/in/anand-rodríguez-menon-44b033309" target="_blank" aria-label="Anand LinkedIn"><i class="bi bi-linkedin"></i></a>
+                  <a href="https://github.com/anand-r-m" target="_blank" aria-label="Anand GitHub"><i
+                      class="bi bi-github"></i></a>
+                  <a href="https://www.linkedin.com/in/anand-rodríguez-menon-44b033309" target="_blank"
+                    aria-label="Anand LinkedIn"><i class="bi bi-linkedin"></i></a>
                 </div>
               </div>
             </div>
@@ -352,7 +376,8 @@
 
               <div class="mb-3">
                 <label for="contact-qualification" class="sg-contact-label">Qualification</label>
-                <input type="text" class="sg-contact-input" id="contact-qualification" required placeholder="Your qualification">
+                <input type="text" class="sg-contact-input" id="contact-qualification" required
+                  placeholder="Your qualification">
                 <div class="invalid-feedback">Please enter your qualification.</div>
               </div>
 
@@ -366,19 +391,22 @@
                   <i class="bi bi-star" data-value="5" role="radio" tabindex="0" aria-label="5 stars"></i>
                 </div>
                 <input type="hidden" id="rating-value" value="0">
-                <div class="invalid-feedback" id="rating-feedback" style="display:none">Please select at least 1 star.</div>
+                <div class="invalid-feedback" id="rating-feedback" style="display:none">Please select at least 1 star.
+                </div>
               </div>
 
               <div class="mb-4">
                 <label for="contact-message" class="sg-contact-label">Message</label>
-                <textarea class="sg-contact-input" id="contact-message" rows="4" required placeholder="Your message (min 10 characters)"></textarea>
+                <textarea class="sg-contact-input" id="contact-message" rows="4" required
+                  placeholder="Your message (min 10 characters)"></textarea>
                 <div class="invalid-feedback">Message must be at least 10 characters.</div>
               </div>
 
               <button type="submit" class="btn sg-btn-primary w-100" id="contact-submit">Send Message</button>
             </form>
 
-            <div id="contact-success" class="alert mt-3 d-none" style="background: rgba(74,222,128,0.08); color: #4ADE80; border: 1px solid rgba(74,222,128,0.2); border-radius: 0">
+            <div id="contact-success" class="alert mt-3 d-none"
+              style="background: rgba(74,222,128,0.08); color: #4ADE80; border: 1px solid rgba(74,222,128,0.2); border-radius: 0">
               Message sent successfully! We'll get back to you soon.
             </div>
           </div>
@@ -390,15 +418,18 @@
           <div class="col-md-6 col-lg-5">
             <div class="sg-card sg-dev-contact-card" style="padding: 2rem">
               <h5>Vidyasree Jayaprasad</h5>
-              <p><i class="bi bi-telephone me-2"></i>+91 98765 43210</p>
-              <p><i class="bi bi-envelope me-2"></i><a href="mailto:vidyasree.dev@signgloss.in">vidyasree.dev@signgloss.in</a></p>
+              <p><i class="bi bi-telephone me-2"></i>+91 94969 61703</p>
+              <p><i class="bi bi-envelope me-2"></i><a
+                  href="mailto:[vidyasree2708@gmail.com]">[vidyasree2708@gmail.com]</a></p>
             </div>
           </div>
           <div class="col-md-6 col-lg-5">
             <div class="sg-card sg-dev-contact-card" style="padding: 2rem">
               <h5>Anand R M</h5>
-              <p><i class="bi bi-telephone me-2"></i>+91 87654 32109</p>
-              <p><i class="bi bi-envelope me-2"></i><a href="mailto:anand.dev@signgloss.in">anand.dev@signgloss.in</a></p>
+              <p><i class="bi bi-telephone me-2"></i>+91 97470 51976</p>
+              <p><i class="bi bi-envelope me-2"></i><a
+                  href="mailto:anandrodriguezmenon@gmail.com">anandrodriguezmenon@gmail.com</a>
+              </p>
             </div>
           </div>
         </div>
@@ -413,4 +444,5 @@
   <script src="js/animations.js"></script>
   <script src="js/team.js"></script>
 </body>
+
 </html>

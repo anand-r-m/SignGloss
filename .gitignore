@@ -7,6 +7,7 @@ __pycache__/
 .vscode/
 
 .agent/
+_unused/
 context.md
 phase_roadmaps.md
 prd_dev_a.md

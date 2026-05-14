@@ -77,6 +77,16 @@
   </style>
 </head>
 <body data-bs-theme="dark">
+
+  <!-- Slideshow background -->
+  <div class="sg-slideshow-bg" id="sg-slideshow">
+    <div class="sg-slide active" style="background-image: url('assets/images/pic1.jpg')"></div>
+    <div class="sg-slide" style="background-image: url('assets/images/pic2.jpg')"></div>
+    <div class="sg-slide" style="background-image: url('assets/images/pic3.jpg')"></div>
+    <div class="sg-slide" style="background-image: url('assets/images/pic4.jpg')"></div>
+    <div class="sg-slide" style="background-image: url('assets/images/pic5.jpg')"></div>
+  </div>
+
   <div id="navbar-placeholder"></div>
 
   <main>
@@ -265,6 +275,21 @@
         var walk = (x - startX) * 1.5;
         track.scrollLeft = scrollLeft - walk;
       });
+    })();
+  </script>
+
+  <!-- Slideshow background rotation -->
+  <script>
+    (function() {
+      var slides = document.querySelectorAll('#sg-slideshow .sg-slide');
+      var current = 0;
+      var total = slides.length;
+
+      setInterval(function() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % total;
+        slides[current].classList.add('active');
+      }, 5000);
     })();
   </script>
 </body>

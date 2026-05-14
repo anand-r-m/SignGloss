@@ -5,3 +5,9 @@ node_modules/
 __pycache__/
 *.pyc
 .vscode/
+
+.agent/
+context.md
+phase_roadmaps.md
+prd_dev_a.md
+implementation_plan.md
